@@ -51,4 +51,6 @@ export default {
   'menu.test': '测试',
   'menu.test.modal': '测试对话框',
   'menu.test.upload': '测试上传组件',
+  'menu.custom': '动态组件',
+  'menu.panel': '面板',
 };

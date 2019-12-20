@@ -1,0 +1,12 @@
+:global .container {
+  padding-top: 30px;
+  height: 470px;
+  background-color: #fff;
+}
+:global .container .common_search_content {
+  background-color: #f7f7f7;
+}
+:global .container .common_search_content .select-input {
+  width: 100%;
+}
+/*# sourceMappingURL=goodsSpecs.css.map */

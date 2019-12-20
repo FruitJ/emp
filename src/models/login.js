@@ -10,6 +10,7 @@ const Model = {
   },
   effects: {
     *login({ payload }, { call, put }) {
+      console.log(payload);
       const response = yield call(fakeAccountLogin, payload);
       yield put({
         type: 'changeLoginStatus',

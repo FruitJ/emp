@@ -95,7 +95,7 @@ export default {
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
+          // authority: ['admin', 'user'],
           routes: [
             {
               path: '/',
@@ -105,22 +105,41 @@ export default {
               path: '/welcome',
               name: 'welcome',
               icon: 'smile',
+              authority: ['张无忌'],
               component: './Welcome',
             },
             {
-              path: "/test",
-              name: "test",
+              path: '/treeNode',
+              name: 'welcome',
+              icon: 'smile',
+              authority: ['张无忌'],
+              component: './TreeNodes',
+            },
+            {
+              path: '/test',
+              name: 'test',
               routes: [
                 {
-                  path: "/test/modal",
-                  name: "modal",
-                  component: "./test/TestModal"
-                },{
-                  path: "/test/upload",
-                  name: "upload",
-                  component: "./test/TestUpload"
-                }
-              ]
+                  path: '/test/modal',
+                  name: 'modal',
+                  component: './test/TestModal',
+                },
+                {
+                  path: '/test/upload',
+                  name: 'upload',
+                  component: './test/TestUpload',
+                },
+              ],
+            },
+            {
+              path: '/component/goods-specs',
+              name: 'custom',
+              component: './GoodsSpecsRouter',
+            },
+            {
+              path: '/component/select-panel',
+              name: 'panel',
+              component: './PanelRouter',
             },
             {
               path: '/admin',
@@ -194,17 +213,17 @@ export default {
     '/api/sendToken': {
       target: 'http://localhost:8080/management_platform/',
       changeOrigin: true,
-      pathRewrite: { '^/api': '' }
+      pathRewrite: { '^/api': '' },
     },
     '/api/uploadPic': {
       target: 'http://localhost:8080/management_platform/',
       changeOrigin: true,
-      pathRewrite: { '^/api': '' }
+      pathRewrite: { '^/api': '' },
     },
     '/api/removeFile': {
       target: 'http://localhost:8080/management_platform/',
       changeOrigin: true,
-      pathRewrite: { '^/api': '' }
+      pathRewrite: { '^/api': '' },
     },
   },
 };

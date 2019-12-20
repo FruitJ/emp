@@ -1,0 +1,133 @@
+:global {
+  /* 输入区域 */
+  /* 操作区域 */
+  /* 面板提示区域 */
+  /* 用户自定义输入区域 */
+  /* 数据展示区域 */
+}
+:global .triangleUp,
+:global .triangleDown {
+  transform-origin: center center;
+}
+:global .triangleUp {
+  transform: rotate(-180deg);
+  transition-duration: 0.5s;
+}
+:global .triangleDown {
+  transform: rotate(0deg);
+  transition-duration: 0.5s;
+}
+:global .content {
+  position: relative;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  height: auto;
+  box-shadow: 0 2px 8px 0 rgba(200, 201, 204, 0.5);
+  cursor: pointer;
+  background-color: #fff;
+}
+:global .input-area {
+  position: relative;
+  margin: 0 auto;
+  padding-left: 5px;
+  width: 90%;
+  height: auto;
+  border: 1px solid #dbdddf;
+  line-height: 30px;
+}
+:global .input-area .outer-tag {
+  display: inline-block;
+  margin-left: 5px;
+  margin-top: 5px;
+  padding-left: 5px;
+  width: 92px;
+  height: 18px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  background: #fafafa;
+}
+:global .input-area .outer-tag div {
+  display: inline-block;
+  position: relative;
+  top: -2.5px;
+  width: 60px;
+  height: 16px;
+  line-height: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+:global .input-area .outer-tag .glyphicon {
+  display: inline-block;
+  position: relative;
+  top: -5.5px;
+  margin-left: 10px;
+}
+:global .input-area .caret {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  margin-top: -2px;
+}
+:global .operate-area {
+  position: relative;
+  margin-left: 13px;
+  padding-top: 10px;
+  width: 90%;
+  height: 32px;
+}
+:global .operate-area div {
+  position: absolute;
+  right: 0;
+  width: 78px;
+}
+:global .operate-area div .btn {
+  position: relative;
+  right: 0;
+}
+:global .operate-area div .btn-sure {
+  margin-left: 5px;
+}
+:global .panel-hint-area {
+  display: none;
+  position: absolute;
+  margin-left: 13px;
+  width: 81%;
+  box-shadow: 0 2px 8px 0 rgba(200, 201, 204, 0.5);
+}
+:global .user-custom-area {
+  height: '100%';
+}
+:global .user-custom-area .input-front-modal {
+  height: 90%;
+  border: 0;
+  border-bottom: 1px solid #dee0e2;
+  background-color: #fff;
+}
+:global .user-custom-area input {
+  height: 90%;
+  border: none;
+  border-bottom: 1px solid #dee0e2;
+}
+:global .data-show-area {
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+}
+:global .data-show-area ul {
+  margin-bottom: 0;
+  padding-left: 0;
+}
+:global .data-show-area ul li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 10px;
+  height: 35px;
+  line-height: 35px;
+}
+:global .data-show-area ul li:hover {
+  cursor: pointer;
+  background-color: #ecf3fe;
+}
+/*# sourceMappingURL=panel.css.map */

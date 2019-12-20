@@ -1,0 +1,150 @@
+:global {
+  .triangleUp,
+  .triangleDown {
+    transform-origin: center center;
+  }
+  .triangleUp {
+    transform: rotate(-180deg);
+    transition-duration: 0.5s;
+  }
+  .triangleDown {
+    transform: rotate(0deg);
+    transition-duration: 0.5s;
+  }
+
+  .content {
+    position: relative;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: auto;
+    box-shadow: 0 2px 8px 0 rgba(200, 201, 204, 0.5);
+    cursor: pointer;
+    background-color: #fff;
+  }
+  /* 输入区域 */
+  .input-area {
+    position: relative;
+    margin: 0 auto;
+    padding-left: 5px;
+    width: 90%;
+    height: auto;
+    border: 1px solid #dbdddf;
+    line-height: 30px;
+
+    .outer-tag {
+      display: inline-block;
+      margin-left: 5px;
+      margin-top: 5px;
+      padding-left: 5px;
+      width: 92px;
+      height: 18px;
+      border: 1px solid #d9d9d9;
+      border-radius: 5px;
+      // lineHeight: "10px",
+      background: #fafafa;
+
+      div {
+        display: inline-block;
+        position: relative;
+        top: -2.5px;
+        width: 60px;
+        height: 16px;
+        line-height: 13px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      .glyphicon {
+        display: inline-block;
+        position: relative;
+        top: -5.5px;
+        margin-left: 10px;
+      }
+    }
+
+    .caret {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      margin-top: -2px;
+    }
+  }
+
+  /* 操作区域 */
+  .operate-area {
+    position: relative;
+    margin-left: 13px;
+    padding-top: 10px;
+    width: 90%;
+    height: 32px;
+
+    div {
+      position: absolute;
+      right: 0;
+      width: 78px;
+      .btn {
+        position: relative;
+        right: 0;
+      }
+      .btn-sure {
+        margin-left: 5px;
+      }
+    }
+  }
+
+  /* 面板提示区域 */
+  .panel-hint-area {
+    display: none;
+    position: absolute;
+    //top: 38px;
+    margin-left: 13px;
+    width: 81%;
+    box-shadow: 0 2px 8px 0 rgba(200, 201, 204, 0.5);
+  }
+
+  /* 用户自定义输入区域 */
+  .user-custom-area {
+    height: '100%';
+
+    .input-front-modal {
+      height: 90%;
+      border: 0;
+
+      border-bottom: 1px solid #dee0e2;
+      background-color: #fff;
+    }
+
+    input {
+      height: 90%;
+      border: none;
+      border-bottom: 1px solid #dee0e2;
+    }
+  }
+
+  /* 数据展示区域 */
+  .data-show-area {
+    position: relative;
+    width: 100%;
+    background-color: #fff;
+
+    ul {
+      margin-bottom: 0;
+      padding-left: 0;
+
+      li {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-left: 10px;
+        height: 35px;
+        line-height: 35px;
+      }
+
+      li:hover {
+        cursor: pointer;
+        background-color: #ecf3fe;
+      }
+    }
+  }
+}

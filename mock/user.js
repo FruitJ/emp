@@ -96,6 +96,15 @@ export default {
       return;
     }
 
+    if (password === 'ant.design' && userName === '张无忌') {
+      res.send({
+        status: 'ok',
+        type,
+        currentAuthority: '张无忌',
+      });
+      return;
+    }
+
     res.send({
       status: 'error',
       type,
