@@ -11,5 +11,18 @@
         width: 100%;
       }
     }
+
+    .triangleUp,
+    .triangleDown {
+      transform-origin: center center;
+    }
+    .triangleUp {
+      transform: rotate(-180deg);
+      transition-duration: 0.5s;
+    }
+    .triangleDown {
+      transform: rotate(0deg);
+      transition-duration: 0.5s;
+    }
   }
 }

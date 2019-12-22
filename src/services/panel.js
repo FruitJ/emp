@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '../utils/request';
 import qs from 'qs';
 
 export async function loadSpecsOptionService(param) {
@@ -8,5 +8,11 @@ export async function loadSpecsOptionService(param) {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
+  });
+}
+
+export async function loadSpecsService() {
+  return request('/api/loadSpecsService', {
+    method: 'POST',
   });
 }

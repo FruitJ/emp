@@ -1,16 +1,14 @@
-import React, { Component, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { connect } from 'dva';
 
 import './customComponent/static/panel.less';
 
 let global_top = 0;
 
-const PanelRouter = ({ dispatch, goodsSpecs }) => {
-  // class PanelRouter extends Component {
+const PanelRouter = props => {
   const input_area$nodeRef = useRef();
   const panel_hint_area$nodeRef = useRef();
-
+  console.log(props.modal);
   useEffect(() => {}, []);
 
   const handleChangeTriangleStatus = ev => {
@@ -25,36 +23,20 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
     ];
 
     // 加载列表数据
-    dispatch({
-      type: 'goodsSpecs/loadSpecsOption',
-      payload: {
-        specs_id: 1,
-      },
-    });
+    props.onLoadGoodsSpecsOption(1);
 
     if (hint_panel_status !== 'none') {
-      dispatch({
-        type: 'goodsSpecs/_changeTriangleStyle',
-        payload: 'triangleDown',
-      });
-      dispatch({
-        type: 'goodsSpecs/_updateHintPanelStatus',
-        payload: {
-          display: 'none',
-          top: 0,
-        },
+      props.onChangeTriangleStyle('triangleDown');
+      props.onUpdateHintPanelStatus({
+        display: 'none',
+        top: 0,
       });
     } else {
-      dispatch({
-        type: 'goodsSpecs/_changeTriangleStyle',
-        payload: 'triangleUp',
-      });
-      dispatch({
-        type: 'goodsSpecs/_updateHintPanelStatus',
-        payload: {
-          display: 'block',
-          top: global_top,
-        },
+      props.onChangeTriangleStyle('triangleUp');
+
+      props.onUpdateHintPanelStatus({
+        display: 'block',
+        top: global_top,
       });
     }
     // 为 document 添加点击事件
@@ -62,7 +44,7 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
       'click',
       function(ev) {
         // 检测当前的点击区域是否是操作区域
-
+        alert('document ...');
         const { current: node } = panel_hint_area$nodeRef;
 
         if (node !== null) {
@@ -91,34 +73,22 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
             if (
               !(cur_posY >= $top && cur_posY <= $bottom && cur_posX >= $left && cur_posX <= $right)
             ) {
-              dispatch({
-                type: 'goodsSpecs/_updateHintPanelStatus',
-                payload: {
-                  display: 'none',
-                  top: 0,
-                },
+              props.onUpdateHintPanelStatus({
+                display: 'none',
+                top: 0,
               });
 
-              dispatch({
-                type: 'goodsSpecs/_changeTriangleStyle',
-                payload: 'triangleDown',
-              });
+              props.onChangeTriangleStyle('triangleDown');
             } else {
               if (ev.target.classList[0] !== 'glyphicon') {
                 // 判断一下当前状态
 
-                dispatch({
-                  type: 'goodsSpecs/_updateHintPanelStatus',
-                  payload: {
-                    display: 'block',
-                    top: global_top,
-                  },
+                props.onUpdateHintPanelStatus({
+                  display: 'block',
+                  top: global_top,
                 });
 
-                dispatch({
-                  type: 'goodsSpecs/_changeTriangleStyle',
-                  payload: 'triangleUp',
-                });
+                props.onChangeTriangleStyle('triangleUp');
               } else {
               }
             }
@@ -133,21 +103,13 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
   const handleAddSpecsOption = ev => {
     // 获取输入区域节点
     // 将值传进 select 框内部
-    dispatch({
-      type: 'goodsSpecs/_addSpecsToSelector',
-      payload: Number(ev.target.dataset.key),
-    });
-    dispatch({
-      type: 'goodsSpecs/_changeTriangleStyle',
-      payload: 'triangleDown',
-    });
 
-    dispatch({
-      type: 'goodsSpecs/_updateHintPanelStatus',
-      payload: {
-        display: 'none',
-        top: 0,
-      },
+    props.onAddSpecsToSelector(ev);
+    props.onChangeTriangleStyle('triangleDown');
+
+    props.onUpdateHintPanelStatus({
+      display: 'none',
+      top: 0,
     });
   };
 
@@ -157,21 +119,13 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
     ev.nativeEvent.stopPropagation();
 
     // 移除待选区域的标签
-    dispatch({
-      type: 'goodsSpecs/_removeSpecsFromSelector',
-      payload: {
-        key: ev.target.dataset.key,
-      },
-    });
+    props.onRemoveSpecsFromSelector(ev);
   };
 
   // 将商品规格值绑定到 Modal 上
   const handleBindInputVal = ev => {
     // 绑定表单值到 Modal
-    dispatch({
-      type: 'goodsSpecs/_bindInputVal',
-      payload: ev.target.value,
-    });
+    props.onBindInputVal(ev);
   };
 
   // 测试能否阻止事件冒泡到 document 层
@@ -184,23 +138,25 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
     // 取消
 
     // 将当前的面板干掉
-    dispatch({
-      type: 'goodsSpecs/_CancelOperatePanel',
-      payload: 'none',
-    });
+
+    props.onCancelOperatePanel('none');
   };
 
   const handleSubmitValFromOperatePanel = () => {
     // 将当前选中的值提交 ( 替换数据源 )
-    dispatch({
-      type: 'goodsSpecs/_submitValFromOperatePanel',
-    });
+
+    props.onSubmitValFromOperatePanel();
+  };
+
+  const handleCompositionEnd = () => {
+    // alert(99);
+    props.onCompositionEnd();
   };
 
   return (
     <div
       style={{
-        display: goodsSpecs.isVanish,
+        display: props.modal.isVanish,
       }}
     >
       <div
@@ -222,7 +178,7 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
             >
               {/* 根据 input_select$arr 数组中的长度动态生成在 selector 中的元素 */}
               {// 数组中没有添加的内容不生成标签元素 ( 将控件中的字体置灰 )
-              goodsSpecs.input_select$arr.length === 0 ? (
+              props.modal.input_select$arr.length === 0 ? (
                 <span
                   className="input"
                   style={{
@@ -230,11 +186,11 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
                   }}
                 >
                   {' '}
-                  {goodsSpecs.input_select$val}{' '}
+                  {props.modal.input_select$val}{' '}
                 </span>
               ) : (
                 // 数组中有已添加的内容，生成对应的标签元素
-                goodsSpecs.input_select$arr.map((item, index) => (
+                props.modal.input_select$arr.map((item, index) => (
                   <div
                     key={index}
                     style={{
@@ -261,7 +217,7 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
                 ))
               )}
 
-              <span className={`caret ${goodsSpecs.triangleDirection}`}> </span>
+              <span className={`caret ${props.modal.triangleDirection}`}> </span>
             </div>
 
             {/* 操作区域 */}
@@ -284,28 +240,31 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
             <div
               className="panel-hint-area"
               style={{
-                display: goodsSpecs.hint_panel_status.display,
-                top: `${goodsSpecs.hint_panel_status.top}px`,
+                display: props.modal.hint_panel_status.display,
+                left: `${props.modal.hint_panel_status.left}px`,
+                top: `${props.modal.hint_panel_status.top}px`,
+                zIndex: '1000',
               }}
               ref={panel_hint_area$nodeRef}
             >
-              {/* 用户自定义输入区域 */}
+              {/*用户自定义输入区域*/}
               <div className="input-group user-custom-area">
                 <div className="input-group-addon input-front-modal">
                   <span className="glyphicon glyphicon-search"> </span>
                 </div>
                 <input
                   type="text"
-                  value={goodsSpecs.input_custom$val}
+                  value={props.modal.input_custom$val}
                   className="form-control"
                   onChange={handleBindInputVal}
+                  onCompositionEnd={handleCompositionEnd}
                 />
               </div>
-              {/* 数据列表展示区域 */}
+              {/*数据列表展示区域*/}
               <div className="data-show-area">
-                {/* 用户选择下拉框时或者输入自定义内容时弹出的待选内容列表 */}
+                {/*用户选择下拉框时或者输入自定义内容时弹出的待选内容列表*/}
                 <ul>
-                  {goodsSpecs.specsOptionArr.map((item, index) => (
+                  {props.modal.specsOptionArr.map((item, index) => (
                     <li
                       data-key={item.current_id}
                       key={item.current_id}
@@ -325,6 +284,4 @@ const PanelRouter = ({ dispatch, goodsSpecs }) => {
     </div>
   );
 };
-export default connect(({ goodsSpecs }) => ({
-  goodsSpecs,
-}))(PanelRouter);
+export default PanelRouter;
