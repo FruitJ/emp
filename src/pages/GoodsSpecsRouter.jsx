@@ -69,6 +69,8 @@ class GoodsSpecsRouter extends Component {
   };
 
   handleBindInputVal = ev => {
+    console.log('-- * 分割线 * --');
+    console.log('onChange ...');
     this.props.dispatch({
       type: 'goodsSpecs/_bindInputVal',
       payload: ev.target.value,
@@ -117,6 +119,8 @@ class GoodsSpecsRouter extends Component {
   };
 
   handleCompositionEnd = () => {
+    console.log('() 分割线 ()');
+    console.log('CompositionEnd ...');
     this.props.dispatch({
       type: 'goodsSpecs/_compositionEnd',
     });

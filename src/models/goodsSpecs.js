@@ -34,6 +34,7 @@ export default {
     },
     isVanish: 'block',
     selectorSpecsVal: '',
+    prevInputContent: '',
   },
   effects: {
     *loadSpecsOption({ payload: data }, { call, put }) {
@@ -160,6 +161,42 @@ export default {
     _bindInputVal(state, { payload: val }) {
       state.input_custom$val = val; // 更新表单值
 
+      // 判断如果是执行删除操作
+      if (state.prevInputContent.length > state.input_custom$val.length) {
+        // 重新筛选
+        console.log('执行 ...');
+        console.log(state.specsOptionArr);
+        console.log(state.activity_specs$arr);
+        console.log(state.temp);
+
+        if (state.input_custom$val === '') {
+          console.log('分割线');
+          console.log(state.input_custom$val + 'bingo');
+          state.specsOptionArr = JSON.parse(JSON.stringify(state.temp));
+        } else {
+          console.log('_- 有值 -_');
+          state.activity_specs$arr = state.specsOptionArr.filter((item, index) => {
+            console.log(item.name, state.input_custom$val);
+            return item.name.includes(state.input_custom$val);
+          });
+
+          // 未添加用户自定义内容
+          let _uuid = UUID.generate(); // 生成 UUID
+          state.activity_specs$arr.unshift({
+            // 添加用户自定义元素
+            temp: 'temp', // 生成临时字段
+            current_id: _uuid, // 生成临时 id
+            name: state.input_custom$val,
+            key: _uuid, // 生成临时 key
+          });
+
+          state.specsOptionArr = JSON.parse(JSON.stringify(state.activity_specs$arr));
+          console.log(state.activity_specs$arr);
+          console.log(state.specsOptionArr);
+          console.log(state.temp);
+        }
+      }
+
       /*      // 收集输入过的含有正在输入的元素
       state.activity_specs$arr = state.specsOptionArr.filter((item, index) =>
         {
@@ -208,6 +245,7 @@ export default {
       }
       console.log("#  ... 分割线 ... #");
       console.log(state.specsOptionArr);*/
+      state.prevInputContent = state.input_custom$val;
       return { ...state };
     },
     _compositionEnd(state, {}) {
@@ -231,8 +269,18 @@ export default {
         if (state.input_custom$val) {
           // 用户输入不为空
           console.log(')()( 分割线 )()(');
+          console.log(state.specsOptionArr);
           console.log(state.specsOptionArr[0].name);
-          state.specsOptionArr[0].name = state.input_custom$val; // 更新当前临时元素的值
+
+          let tag = state.specsOptionArr.every(
+            (item, index) => item.name !== state.input_custom$val,
+          );
+          if (tag) {
+            state.specsOptionArr[0].name = state.input_custom$val; // 更新当前临时元素的值
+          } else {
+            state.specsOptionArr.shift();
+          }
+
           console.log(state.specsOptionArr[0].name);
         } else {
           // 用户输入为空
@@ -241,15 +289,29 @@ export default {
         }
       } else {
         // alert(0);
-        // 未添加用户自定义内容
-        let _uuid = UUID.generate(); // 生成 UUID
-        state.activity_specs$arr.unshift({
-          // 添加用户自定义元素
-          temp: 'temp', // 生成临时字段
-          current_id: _uuid, // 生成临时 id
-          name: state.input_custom$val,
-          key: _uuid, // 生成临时 key
-        });
+        console.log('(( 分割线 ))');
+        // console.log(state.input_custom$val, state.activity_specs$arr[0].name);
+        // console.log();
+        console.log('*^&');
+        console.log(state.activity_specs$arr);
+
+        /*let tag = state.activity_specs$arr.every((item, index) => item.name !== state.input_custom$val);*/
+
+        if (
+          state.activity_specs$arr.length === 0 ||
+          state.input_custom$val !== state.activity_specs$arr[0].name
+        ) {
+          // 未添加用户自定义内容
+          let _uuid = UUID.generate(); // 生成 UUID
+          state.activity_specs$arr.unshift({
+            // 添加用户自定义元素
+            temp: 'temp', // 生成临时字段
+            current_id: _uuid, // 生成临时 id
+            name: state.input_custom$val,
+            key: _uuid, // 生成临时 key
+          });
+        }
+
         // 保存规格选项列表数组
         state.temp = JSON.parse(JSON.stringify(state.specsOptionArr));
         // 使用临时数组将规格选项列表数组进行覆盖
