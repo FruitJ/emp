@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { connect } from 'dva';
-import { message } from 'antd';
+import { Button, message } from 'antd';
 
 import GoodsSpecs from './customComponent/components/GoodsSpecs';
 
@@ -154,6 +154,13 @@ class GoodsSpecsRouter extends Component {
     });
   };
 
+  handleAddCount = () => {
+    // 增加商品规格控件
+    this.props.dispatch({
+      type: 'goodsSpecs/_addGoodsSpecsComponent',
+    });
+  };
+
   render() {
     const { goodsSpecs } = this.props;
 
@@ -180,6 +187,7 @@ class GoodsSpecsRouter extends Component {
           onCompositionEnd={this.handleCompositionEnd}
           onSelectCompositionEnd={this.onSelectCompositionEnd}
           onSelectCompositionStart={this.onSelectCompositionStart}
+          onAddCount={this.handleAddCount}
         />
       </div>
     );

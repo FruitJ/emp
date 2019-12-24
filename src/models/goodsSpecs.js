@@ -4,41 +4,8 @@ import UUID from 'uuidjs';
 export default {
   namespace: 'goodsSpecs',
   state: {
-    addSpecsPanelStyle: {
-      top: 100,
-      left: 100,
-      status: 'none',
-    },
-    goodsSpecs$arr: [],
-    specs$arr: [],
-    temp_specs$arr: [],
-    base_specs$arr: [],
-    triangleDirection: '',
-    select_triangleDirection: '',
-    specsOptionArr: [],
-    input_select$val: '请选择',
-    input_select$arr: [],
-    input_custom$val: '',
-    select_input_custom: '',
-    activity_specs$arr: [],
-    temp: [],
-    hint_panel_status: {
-      display: 'none',
-      top: '0',
-      left: '15',
-    },
-    selectHint_panel_status: {
-      display: 'none',
-      top: '0',
-      // left: "15",
-    },
-    isVanish: 'block',
-    selectorSpecsVal: '',
-    prevInputContent: '',
-    prevSelectInputContent: '',
-    isInput: false,
-    saveGoodsSpecs$arr: [],
-    prevGoodsSpecs: '',
+    specs: [],
+    specs_count: 0,
   },
   effects: {
     *loadSpecsOption({ payload: data }, { call, put }) {
@@ -74,10 +41,8 @@ export default {
       state.addSpecsPanelStyle.top = param.top;
       state.addSpecsPanelStyle.left = param.left;
       state.addSpecsPanelStyle.status = param.status;
-
       return { ...state };
     },
-
     _changeTriangleStyle(state, { payload: className }) {
       state.triangleDirection = className;
       return { ...state };
@@ -476,7 +441,9 @@ export default {
       return { ...state };
     },
     _updateSelectHintPanelStatus(state, { payload: param }) {
-      state.selectHint_panel_status.display = param.display;
+      console.log('*&*');
+      console.log(param.key);
+      state.specs[param.key].selectHint_panel_status.display = param.display;
 
       return { ...state };
     },
@@ -608,7 +575,7 @@ export default {
         console.log('()()()() 分割线');
         console.log(temp);
         /*if() {
-		
+
 		}*/
         let tag = temp.every((item, index) => {
           console.log(
@@ -642,6 +609,54 @@ export default {
     _selectCompositionStart(state, {}) {
       // 正在输入中文中
       state.isInput = true;
+      return { ...state };
+    },
+    _addGoodsSpecsComponent(state, {}) {
+      // + 1 ( <=3  )
+      if (state.specs_count <= 3 && state.specs_count >= 0) {
+        state.specs_count += 1;
+        console.log(state.specs_count);
+        state.specs.push({
+          addSpecsPanelStyle: {
+            top: 100,
+            left: 100,
+            status: 'none',
+          },
+          goodsSpecs$arr: [],
+          specs$arr: [],
+          temp_specs$arr: [],
+          base_specs$arr: [],
+          triangleDirection: '',
+          select_triangleDirection: '',
+          specsOptionArr: [],
+          input_select$val: '请选择',
+          input_select$arr: [],
+          input_custom$val: '',
+          select_input_custom: '',
+          activity_specs$arr: [],
+          temp: [],
+          hint_panel_status: {
+            display: 'none',
+            top: '0',
+            left: '15',
+          },
+          selectHint_panel_status: {
+            display: 'none',
+            top: '0',
+            // left: "15",
+          },
+          isVanish: 'block',
+          selectorSpecsVal: '',
+          prevInputContent: '',
+          prevSelectInputContent: '',
+          isInput: false,
+          saveGoodsSpecs$arr: [],
+          prevGoodsSpecs: '',
+
+          add_specs$arr: [],
+        });
+      }
+
       return { ...state };
     },
   },

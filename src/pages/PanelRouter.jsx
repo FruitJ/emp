@@ -25,6 +25,8 @@ const PanelRouter = props => {
     // 加载列表数据
     props.onLoadGoodsSpecsOption(1);
 
+    alert(props.dataKey);
+
     if (hint_panel_status !== 'none') {
       props.onChangeTriangleStyle('triangleDown');
       props.onUpdateHintPanelStatus({
@@ -156,7 +158,7 @@ const PanelRouter = props => {
   return (
     <div
       style={{
-        display: props.modal.isVanish,
+        display: props.modal.specs[props.dataKey].isVanish,
       }}
     >
       <div
@@ -178,7 +180,7 @@ const PanelRouter = props => {
             >
               {/* 根据 input_select$arr 数组中的长度动态生成在 selector 中的元素 */}
               {// 数组中没有添加的内容不生成标签元素 ( 将控件中的字体置灰 )
-              props.modal.input_select$arr.length === 0 ? (
+              props.modal.specs[props.dataKey].input_select$arr.length === 0 ? (
                 <span
                   className="input"
                   style={{
@@ -186,11 +188,11 @@ const PanelRouter = props => {
                   }}
                 >
                   {' '}
-                  {props.modal.input_select$val}{' '}
+                  {props.modal.specs[props.dataKey].input_select$val}{' '}
                 </span>
               ) : (
                 // 数组中有已添加的内容，生成对应的标签元素
-                props.modal.input_select$arr.map((item, index) => (
+                props.modal.specs[props.dataKey].input_select$arr.map((item, index) => (
                   <div
                     key={index}
                     style={{
@@ -217,7 +219,9 @@ const PanelRouter = props => {
                 ))
               )}
 
-              <span className={`caret ${props.modal.triangleDirection}`}> </span>
+              <span className={`caret ${props.modal.specs[props.dataKey].triangleDirection}`}>
+                {' '}
+              </span>
             </div>
 
             {/* 操作区域 */}
@@ -240,9 +244,9 @@ const PanelRouter = props => {
             <div
               className="panel-hint-area"
               style={{
-                display: props.modal.hint_panel_status.display,
-                left: `${props.modal.hint_panel_status.left}px`,
-                top: `${props.modal.hint_panel_status.top}px`,
+                display: props.modal.specs[props.dataKey].hint_panel_status.display,
+                left: `${props.modal.specs[props.dataKey].hint_panel_status.left}px`,
+                top: `${props.modal.specs[props.dataKey].hint_panel_status.top}px`,
                 zIndex: '1000',
               }}
               ref={panel_hint_area$nodeRef}
@@ -254,7 +258,7 @@ const PanelRouter = props => {
                 </div>
                 <input
                   type="text"
-                  value={props.modal.input_custom$val}
+                  value={props.modal.specs[props.dataKey].input_custom$val}
                   className="form-control"
                   onChange={handleBindInputVal}
                   onCompositionEnd={handleCompositionEnd}
@@ -264,7 +268,7 @@ const PanelRouter = props => {
               <div className="data-show-area">
                 {/*用户选择下拉框时或者输入自定义内容时弹出的待选内容列表*/}
                 <ul>
-                  {props.modal.specsOptionArr.map((item, index) => (
+                  {props.modal.specs[props.dataKey].specsOptionArr.map((item, index) => (
                     <li
                       data-key={item.current_id}
                       key={item.current_id}
