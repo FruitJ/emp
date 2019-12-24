@@ -53,4 +53,5 @@ export default {
   'menu.test.upload': '测试上传组件',
   'menu.custom': '动态组件',
   'menu.panel': '面板',
+  'menu.table': '表格',
 };

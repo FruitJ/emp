@@ -142,6 +142,11 @@ export default {
               component: './PanelRouter',
             },
             {
+              path: '/component/table',
+              name: 'table',
+              component: './TableRouter',
+            },
+            {
               path: '/admin',
               name: 'admin',
               icon: 'crown',

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { connect } from 'dva';
+import { message } from 'antd';
 
 import GoodsSpecs from './customComponent/components/GoodsSpecs';
 
@@ -10,15 +11,21 @@ class GoodsSpecsRouter extends Component {
   }
 
   handleUpdateAddSpecsPanelStatus = node => {
-    // 更新状态
-    this.props.dispatch({
-      type: 'goodsSpecs/_updateAddSpecsPanelStyle',
-      payload: {
-        top: node.offsetTop,
-        left: node.offsetLeft,
-        status: 'block',
-      },
-    });
+    // 检测当前是否已经选择商品规格
+    if (this.props.goodsSpecs.saveGoodsSpecs$arr.length !== 0) {
+      // 更新状态
+      this.props.dispatch({
+        type: 'goodsSpecs/_updateAddSpecsPanelStyle',
+        payload: {
+          top: node.offsetTop,
+          left: node.offsetLeft,
+          status: 'block',
+        },
+      });
+    } else {
+      // 全具提示
+      message.warning('请选择具体的商品规格后再添加对应的规格值 !');
+    }
   };
 
   // 加载商品规格值的数据
@@ -62,6 +69,15 @@ class GoodsSpecsRouter extends Component {
   handleRemoveSpecsFromSelector = ev => {
     this.props.dispatch({
       type: 'goodsSpecs/_removeSpecsFromSelector',
+      payload: {
+        key: ev.target.dataset.key,
+      },
+    });
+  };
+
+  handleRemoveSelectSpecsFromSelector = ev => {
+    this.props.dispatch({
+      type: 'goodsSpecs/_removeSelectSpecsFromSelector',
       payload: {
         key: ev.target.dataset.key,
       },
@@ -126,6 +142,18 @@ class GoodsSpecsRouter extends Component {
     });
   };
 
+  onSelectCompositionEnd = () => {
+    this.props.dispatch({
+      type: 'goodsSpecs/_selectCompositionEnd',
+    });
+  };
+
+  onSelectCompositionStart = () => {
+    this.props.dispatch({
+      type: 'goodsSpecs/_selectCompositionStart',
+    });
+  };
+
   render() {
     const { goodsSpecs } = this.props;
 
@@ -139,6 +167,7 @@ class GoodsSpecsRouter extends Component {
           onUpdateHintPanelStatus={this.handleUpdateHintPanelStatus}
           onAddSpecsToSelector={this.handleAddSpecsToSelector}
           onRemoveSpecsFromSelector={this.handleRemoveSpecsFromSelector}
+          onRemoveSelectSpecsFromSelector={this.handleRemoveSelectSpecsFromSelector}
           onBindInputVal={this.handleBindInputVal}
           onCancelOperatePanel={this.handleCancelOperatePanel}
           onSubmitValFromOperatePanel={this.handleSubmitValFromOperatePanel}
@@ -149,6 +178,8 @@ class GoodsSpecsRouter extends Component {
           onBindSelectInputVal={this.handleBindSelectInputVal}
           onLoadGoodsSpecs={this.handleLoadGoodsSpecs}
           onCompositionEnd={this.handleCompositionEnd}
+          onSelectCompositionEnd={this.onSelectCompositionEnd}
+          onSelectCompositionStart={this.onSelectCompositionStart}
         />
       </div>
     );

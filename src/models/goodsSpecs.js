@@ -35,6 +35,10 @@ export default {
     isVanish: 'block',
     selectorSpecsVal: '',
     prevInputContent: '',
+    prevSelectInputContent: '',
+    isInput: false,
+    saveGoodsSpecs$arr: [],
+    prevGoodsSpecs: '',
   },
   effects: {
     *loadSpecsOption({ payload: data }, { call, put }) {
@@ -158,6 +162,17 @@ export default {
 
       return { ...state };
     },
+
+    _removeSelectSpecsFromSelector(state, { payload: data }) {
+      if (Number.isNaN(Number(data.key))) {
+        state.goodsSpecs$arr = state.goodsSpecs$arr.filter((item, index) => item.key !== data.key);
+      } else {
+        state.goodsSpecs$arr = state.goodsSpecs$arr.filter(
+          (item, index) => item.current_id !== Number(data.key),
+        );
+      }
+      return { ...state };
+    },
     _bindInputVal(state, { payload: val }) {
       state.input_custom$val = val; // 更新表单值
 
@@ -170,15 +185,33 @@ export default {
         console.log(state.temp);
 
         if (state.input_custom$val === '') {
+          if (state.temp.length === 0) {
+            state.temp = JSON.parse(JSON.stringify(state.specsOptionArr));
+          }
+
           console.log('分割线');
           console.log(state.input_custom$val + 'bingo');
+          alert('go ...');
+          console.log(JSON.parse(JSON.stringify(state.temp)));
           state.specsOptionArr = JSON.parse(JSON.stringify(state.temp));
         } else {
           console.log('_- 有值 -_');
-          state.activity_specs$arr = state.specsOptionArr.filter((item, index) => {
-            console.log(item.name, state.input_custom$val);
-            return item.name.includes(state.input_custom$val);
+          console.log(state.activity_specs$arr);
+          console.log(state.temp);
+          let temp = JSON.parse(JSON.stringify(state.temp));
+          state.activity_specs$arr = temp.filter((item, index) => {
+            console.log(item.name, state.prevInputContent, state.input_custom$val);
+            return (
+              item.name.includes(state.input_custom$val) && item.name !== state.input_custom$val
+            );
+            // return item.name.includes(state.input_custom$val) && item.name !== state.prevInputContent && item.name !== state.input_custom$val;
           });
+          /*
+					state.activity_specs$arr = state.specsOptionArr.filter((item, index) => {
+					  console.log(item.name, state.prevInputContent, state.input_custom$val);
+					  return item.name.includes(state.input_custom$val) && item.name !== state.prevInputContent;
+					});
+		  */
 
           // 未添加用户自定义内容
           let _uuid = UUID.generate(); // 生成 UUID
@@ -260,8 +293,12 @@ export default {
       try {
         // 如果临时数组中没有任何元素
         // 规格选项列表数组是否已经添加用户自定义内容
+        console.log('++++++++++++++++++++++++++++++');
+        console.log(state.specsOptionArr);
         tag = state.specsOptionArr[0].temp !== undefined;
       } catch (err) {
+        alert(6);
+        console.log(err.message);
         tag = false; // 走下面的 false 逻辑
       }
       if (tag) {
@@ -277,12 +314,20 @@ export default {
           );
           if (tag) {
             state.specsOptionArr[0].name = state.input_custom$val; // 更新当前临时元素的值
+            console.log('啦啦啦啦啦啦啦');
+            console.log(
+              state.specsOptionArr.filter((item, index) => item.name === state.input_custom$val),
+            );
+            state.specsOptionArr = state.specsOptionArr.filter(
+              (item, index) => item.name === state.input_custom$val,
+            );
           } else {
             state.specsOptionArr.shift();
           }
 
           console.log(state.specsOptionArr[0].name);
         } else {
+          alert(9);
           // 用户输入为空
           state.activity_specs$arr = []; // 置空；临时数组
           state.specsOptionArr = JSON.parse(JSON.stringify(state.temp)); // 将用户自定义输入之前的规格选项列表数组进行还原
@@ -298,9 +343,11 @@ export default {
         /*let tag = state.activity_specs$arr.every((item, index) => item.name !== state.input_custom$val);*/
 
         if (
-          state.activity_specs$arr.length === 0 ||
-          state.input_custom$val !== state.activity_specs$arr[0].name
+          (state.activity_specs$arr.length === 0 ||
+            state.input_custom$val !== state.activity_specs$arr[0].name) &&
+          state.input_custom$val !== ''
         ) {
+          alert(110);
           // 未添加用户自定义内容
           let _uuid = UUID.generate(); // 生成 UUID
           state.activity_specs$arr.unshift({
@@ -312,8 +359,24 @@ export default {
           });
         }
 
+        /*if(state.input_custom$val === "") {
+        state.input_custom$val !== ""
+        }*/
+        console.log(`up: ${state.prevInputContent}, current: ${state.input_custom$val}`);
+
         // 保存规格选项列表数组
-        state.temp = JSON.parse(JSON.stringify(state.specsOptionArr));
+        alert('here');
+        console.log('哈哈');
+        console.log(state.temp);
+        if (state.temp.length === 0) {
+          state.temp = JSON.parse(JSON.stringify(state.specsOptionArr));
+        }
+        console.log(state.temp);
+        console.log('嘻嘻');
+        if (state.prevInputContent === '' && state.input_custom$val === '') {
+          // state.activity_specs$arr = JSON.parse(JSON.stringify(state.temp));
+          alert('呼啦啦');
+        }
         // 使用临时数组将规格选项列表数组进行覆盖
         state.specsOptionArr = JSON.parse(JSON.stringify(state.activity_specs$arr));
       }
@@ -422,10 +485,54 @@ export default {
       return { ...state };
     },
     _addGoodsSpecsToSelector(state, { payload: key }) {
-      console.log('dkpwqadjioaqjoiqjd');
-      console.log(state.specsOptionArr);
-      console.log(state.specsOptionArr[key]);
+      console.log('glasses ...');
+      console.log(Number(state.prevGoodsSpecs) + 'ok', key + 'ok');
+      if (Number(state.prevGoodsSpecs) !== key) {
+        console.log('dkpwqadjioaqjoiqjd');
+        let ele;
+        if (state.specs$arr[0].temp !== undefined) {
+          // 新添加的规格
+          if (Number.isNaN(key)) {
+            // NaN
+            ele = state.specs$arr[0];
+            // ele = state.specs$arr[0].name;
+          } else {
+            // 非 NaN
+            console.log('非 NaN');
+            console.log(state.specs$arr);
+            console.log(key);
+            ele = state.specs$arr[key];
+            // ele = state.specs$arr[key].name;
+          }
+          console.log('^&^&^&^&^');
+          console.log(state.specs$arr[0]);
+        } else {
+          // 原有规格
+
+          ele = state.specs$arr[key - 1];
+          // ele = state.specs$arr[key - 1].name;
+        }
+        state.saveGoodsSpecs$arr.push(ele);
+        state.saveGoodsSpecs$arr.length > 1 ? state.saveGoodsSpecs$arr.shift() : null;
+        console.log(state.specs$arr);
+        console.log(key - 1);
+        console.log(state.specs$arr[key - 1]);
+        console.log(')()(');
+        console.log(state.saveGoodsSpecs$arr);
+
+        if (Number(state.prevGoodsSpecs) !== 0) {
+          alert('删除已有的规格值');
+
+          // 判断当前规格下面是否含有规格值
+          console.log('%^&*!@#$');
+          console.log(state.goodsSpecs$arr);
+          state.goodsSpecs$arr = state.goodsSpecs$arr.length !== 0 ? [] : null;
+        }
+      } else {
+      }
+
       // state.selectorSpecsVal = ;
+      state.prevGoodsSpecs = state.saveGoodsSpecs$arr[0].key;
       return { ...state };
     },
 
@@ -434,62 +541,107 @@ export default {
       console.log(val);
       state.select_input_custom = val;
 
-      // 检索当前数组中有无相同部分元素的内容
-
-      /*
-      let arr = [];
-      state.temp_specs$arr = state.specs$arr.filter((item, index) => {
-
-        console.log("# 分割线 #");
-        console.log(val, item.name);
-        state.specs$arr = arr;
-        return item.name.includes(val);
-      });
-
-      // console.log("# 分割线 #");
-      console.log("()()()");
-      console.log(state.temp_specs$arr);
-*/
-
-      // 收集输入过的含有正在输入的元素
-      /*  state.temp_specs$arr = state.specs$arr.filter((item, index) =>
-        item.name.includes(state.select_input_custom),
-      );
-
-      let tag;
-      try {
-        // 如果临时数组中没有任何元素
-        // 规格选项列表数组是否已经添加用户自定义内容
-        tag = state.specs$arr[0].temp !== undefined;
-      } catch (err) {
-        tag = false; // 走下面的 false 逻辑
-      }
-      if (tag) {
-        // 已添加用户自定义内容
+      // 判断当前是否是删除操作
+      if (state.prevSelectInputContent.length > state.select_input_custom.length) {
+        // 删除操作
+        // 判断当前输入是否为空
         if (state.select_input_custom) {
-          // 用户输入不为空
-          state.specs$arr[0].name = state.select_input_custom; // 更新当前临时元素的值
+          // 不为空
+          let temp = JSON.parse(JSON.stringify(state.temp_specs$arr));
+          temp = temp.filter((item, index) => item.name.includes(state.select_input_custom));
+          console.log('*******************************************');
+          console.log(temp);
+          let tag = temp.every((item, index) => item.name !== state.select_input_custom);
+          if (tag) {
+            let _uuid = UUID.generate(); // 生成 UUID
+            temp.unshift({
+              // 添加用户自定义元素
+              temp: 'temp', // 生成临时字段
+              current_id: _uuid, // 生成临时 id
+              name: state.select_input_custom,
+              key: _uuid, // 生成临时 key
+            });
+          } else {
+          }
+          state.specs$arr = temp;
         } else {
-          // 用户输入为空
-          state.temp_specs$arr = []; // 置空；临时数组
-          state.specs$arr = JSON.parse(JSON.stringify(state.base_specs$arr)); // 将用户自定义输入之前的规格选项列表数组进行还原
+          // 为空
+          // 重置展示数组
+          alert('#@#');
+          if (!state.isInput) {
+            state.specs$arr = JSON.parse(JSON.stringify(state.temp_specs$arr));
+          }
         }
       } else {
-        // 未添加用户自定义内容
-        let _uuid = UUID.generate(); // 生成 UUID
-        state.temp_specs$arr.unshift({
-          // 添加用户自定义元素
-          temp: 'temp', // 生成临时字段
-          current_id: _uuid, // 生成临时 id
-          name: state.select_input_custom,
-          key: _uuid, // 生成临时 key
-        });
-        // 保存规格选项列表数组
-        state.base_specs$arr = JSON.parse(JSON.stringify(state.specs$arr));
-        // 使用临时数组将规格选项列表数组进行覆盖
-        state.specs$arr = JSON.parse(JSON.stringify(state.temp_specs$arr));
-      }*/
+        // alert("back ...");
+        console.warn('back ...');
+      }
+      console.log('*****************************()***********************************');
+      console.log(state.specs$arr);
+      // 保存上一次的输入
+      state.prevSelectInputContent = state.select_input_custom;
+      return { ...state };
+    },
+    _selectCompositionEnd(state, {}) {
+      // specs$arr: [], temp_specs$arr: [],
+      state.isInput = false;
+      console.log('获取当前输入');
+      console.log(state.select_input_custom);
+      console.log('-------------------------------------------------');
+      console.log(state.temp_specs$arr);
+      console.log(state.specs$arr);
 
+      console.log('okay');
+      let temp;
+      if (state.select_input_custom.length !== 0) {
+        // 进行数组筛选
+        if (state.temp_specs$arr.length === 0) {
+          // 备份代码
+          state.temp_specs$arr = JSON.parse(JSON.stringify(state.specs$arr));
+        }
+        // 筛选
+        temp = JSON.parse(JSON.stringify(state.temp_specs$arr));
+        // 判断展示数组中是否有将要被添加的元素 ? 如果有仅显示当前该元素
+        if (state.select_input_custom !== '') {
+          temp = temp.filter((item, index) => item.name.includes(state.select_input_custom));
+        }
+        console.log('()()()() 分割线');
+        console.log(temp);
+        /*if() {
+		
+		}*/
+        let tag = temp.every((item, index) => {
+          console.log(
+            `item.name: ${item.name}; state.select_input_custom: ${state.select_input_custom}; `,
+          );
+          return item.name !== state.select_input_custom && state.select_input_custom !== '';
+        });
+        console.log(`tag: ${tag}`);
+        console.log(`,${state.select_input_custom},`);
+        if (tag) {
+          alert(1111111);
+          // 如果没有则判断展示数组中是含有正在输入内容的元素
+          let _uuid = UUID.generate(); // 生成 UUID
+          temp.unshift({
+            // 添加用户自定义元素
+            temp: 'temp', // 生成临时字段
+            current_id: _uuid, // 生成临时 id
+            name: state.select_input_custom,
+            key: _uuid, // 生成临时 key
+          });
+        }
+      } else {
+        console.log('_)(_');
+        console.log(state.temp_specs$arr);
+        console.log(state.specs$arr);
+        temp = JSON.parse(JSON.stringify(state.specs$arr));
+      }
+      state.specs$arr = temp;
+      return { ...state };
+    },
+    _selectCompositionStart(state, {}) {
+      // 正在输入中文中
+      state.isInput = true;
       return { ...state };
     },
   },

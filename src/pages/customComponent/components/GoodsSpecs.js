@@ -96,6 +96,17 @@ const GoodsSpecs = props => {
     props.onBindSelectInputVal(ev);
   };
 
+  const handleSelectCompositionEnd = () => {
+    props.onSelectCompositionEnd();
+  };
+  const handleSelectCompositionStart = () => {
+    props.onSelectCompositionStart();
+  };
+
+  const handleRmSpecs = ev => {
+    props.onRemoveSelectSpecsFromSelector(ev);
+  };
+
   return (
     <div className="container">
       <Row>
@@ -128,6 +139,7 @@ const GoodsSpecs = props => {
                         style={{
                           margin: '0',
                           height: '32px',
+                          lineHeight: '35px',
                         }}
                         ref={selectRef}
                         onClick={ev => {
@@ -137,10 +149,13 @@ const GoodsSpecs = props => {
                         <span
                           className="input"
                           style={{
-                            color: '#C7C8CB',
+                            // color: '#C7C8CB',
+                            color: '#000',
                           }}
                         >
-                          {/*{ props. }*/}
+                          {props.modal.saveGoodsSpecs$arr.length !== 0
+                            ? props.modal.saveGoodsSpecs$arr[0].name
+                            : '商品规格'}
                         </span>
                         <span className={`caret ${props.modal.select_triangleDirection}`}></span>
                       </div>
@@ -165,6 +180,8 @@ const GoodsSpecs = props => {
                             value={props.modal.select_input_custom}
                             className="form-control"
                             onChange={handleBindSelectInputVal}
+                            onCompositionEnd={handleSelectCompositionEnd}
+                            onCompositionStart={handleSelectCompositionStart}
                           />
                         </div>
                         {/*数据列表展示区域*/}
@@ -211,6 +228,8 @@ const GoodsSpecs = props => {
                               style={{
                                 paddingLeft: '2px',
                               }}
+                              data-key={item.current_id}
+                              onClick={handleRmSpecs}
                             >
                               {' '}
                             </span>
