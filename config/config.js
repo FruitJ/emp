@@ -147,6 +147,11 @@ export default {
               component: './TableRouter',
             },
             {
+              path: '/component/board',
+              name: 'board',
+              component: './FuncComponent/TestFuncBoardRouter',
+            },
+            {
               path: '/admin',
               name: 'admin',
               icon: 'crown',

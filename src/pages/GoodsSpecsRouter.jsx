@@ -39,7 +39,8 @@ class GoodsSpecsRouter extends Component {
   };
 
   // 加载商品规格数据
-  handleLoadGoodsSpecs = () => {
+  handleLoadGoodsSpecs = key => {
+    console.log(`${key} : ~`);
     this.props.dispatch({
       type: 'goodsSpecs/loadSpecs',
     });

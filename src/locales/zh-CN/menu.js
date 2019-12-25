@@ -54,4 +54,5 @@ export default {
   'menu.custom': '动态组件',
   'menu.panel': '面板',
   'menu.table': '表格',
+  'menu.board': '面板',
 };

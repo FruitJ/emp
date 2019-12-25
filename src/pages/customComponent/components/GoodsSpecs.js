@@ -23,6 +23,10 @@ const GoodsSpecs = props => {
 
   const handleSelectSpecsClick = index => {
     alert('...');
+    alert('specs' + index);
+    console.log('+++');
+    console.log(`specs: ${index}....`);
+    console.log(props.modal.specs);
     // console.log(ev.target);
     index_key = index;
     // alert("当前点击的索引" + index_key);
@@ -58,7 +62,7 @@ const GoodsSpecs = props => {
     // 加载列表数据
     // props.onLoadGoodsSpecsOption(1);
 
-    props.onLoadGoodsSpecs();
+    props.onLoadGoodsSpecs(index_key);
     // 更新 select 表单下面的弹框的样式状态
     alert(props.modal.specs_count);
     console.log('()()()()(____');

@@ -12,6 +12,7 @@ export default {
       // 请求数据
       let res = yield call(loadSpecsOptionService, data);
       console.log('== 分割线 ==');
+      console.log();
       console.log(res);
       // 存储数据
       yield put({
@@ -49,10 +50,14 @@ export default {
     },
     _saveSpecsOptionData(state, { payload: param }) {
       state.specsOptionArr = param.data.data;
+
       return { ...state };
     },
     _saveSpecsData(state, { payload: param }) {
       state.specs$arr = param.data.data;
+
+      console.log();
+
       return { ...state };
     },
     // 添加商品规格选项
