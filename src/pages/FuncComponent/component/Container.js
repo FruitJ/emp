@@ -8,6 +8,13 @@ const Container = props => {
     console.log(`props dataKey: ${props.dataKey}`);
   }, []);
 
+  const handleParentInputClick = () => {
+    console.log(`click: ${props.dataKey}`);
+
+    // 请求父节点数据
+    props.onParentInputClick();
+  };
+
   return (
     <Row>
       <Col span={12}>
@@ -23,6 +30,7 @@ const Container = props => {
               height: '32px',
               lineHeight: '32px',
             }}
+            onClick={handleParentInputClick}
           >
             <span className="ele-name" style={{ paddingLeft: '10px' }}>
               元素
@@ -32,7 +40,12 @@ const Container = props => {
               style={{ position: 'absolute', right: '10px', top: '50%', marginTop: '-2px' }}
             />
           </div>
-          <span className="close"> </span>
+          <span
+            className="glyphicon glyphicon-remove"
+            style={{ position: 'absolute', right: 10, top: '50%', marginTop: '-3.5px' }}
+          >
+            {' '}
+          </span>
         </div>
       </Col>
     </Row>

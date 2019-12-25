@@ -1,10 +1,18 @@
+import { loadParentNodeDataService } from '../../../services/board';
+
 export default {
   namespace: 'funcBoard',
   state: {
     count_addContainer: 0, // 添加 container 的数量
     containers: [],
   },
-  effects: {},
+  effects: {
+    *loadParentNodeData({}, { call, put }) {
+      let res = yield call(loadParentNodeDataService);
+      console.log('--- 分割线 ---');
+      console.log(res);
+    },
+  },
   reducers: {
     _addContainer(state, {}) {
       state.count_addContainer += 1; // 记录添加 container 次数

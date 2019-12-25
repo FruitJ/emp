@@ -5,6 +5,7 @@ import { connect } from 'dva';
 // 自定义包
 import AddBoardBtn from './component/AddBoardBtn';
 import Container from './component/Container';
+import './static/TestFuncBoardRouterd.less';
 /**
  * @author FruitJ
  */
@@ -29,12 +30,24 @@ class TestFuncBoardRouter extends Component {
     console.log(this.props.funcBoard.containers);
   };
 
+  // 获取父节点数据的回调函数
+  handleParentInputClick = () => {
+    dispatch({
+      type: 'funcBoard/loadParentNodeData',
+    });
+  };
+
   render() {
     return (
       <div>
         {/* 容器组件 ( 动态生成 ) */}
         {this.props.funcBoard.containers.map((item, index) => (
-          <Container key={index} data-key={index} dataKey={index} />
+          <Container
+            key={index}
+            data-key={index}
+            dataKey={index}
+            onParentInputClick={this.handleParentInputClick}
+          />
         ))}
         {/* 添加按钮组件 */}
         <AddBoardBtn onAddComponentClick={this.handleAddComponentClick} />
