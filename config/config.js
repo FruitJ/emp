@@ -152,6 +152,11 @@ export default {
               component: './FuncComponent/TestFuncBoardRouter',
             },
             {
+              path: '/component/board/hoverInputBoard',
+              name: 'hoverBoard',
+              component: './FuncComponent/component/HoverInputBoard',
+            },
+            {
               path: '/admin',
               name: 'admin',
               icon: 'crown',

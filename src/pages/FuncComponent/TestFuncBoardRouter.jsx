@@ -31,9 +31,50 @@ class TestFuncBoardRouter extends Component {
   };
 
   // 获取父节点数据的回调函数
-  handleParentInputClick = () => {
+  /**
+   * @author { FruitJ }
+   * @param { Number } key 当前正被操作的索引
+   * @return { Void } 无返回值
+   * @description 加载当前被选中的父级 input 框所要展示的数据
+   */
+  handleParentInputClick = key => {
     dispatch({
       type: 'funcBoard/loadParentNodeData',
+      payload: {
+        key,
+      },
+    });
+  };
+
+  /**
+   * @author { FruitJ }
+   * @param { Number } index 当前 container 面板的索引
+   * @return { Void } 无返回值
+   * @description 删除当前选中的 container 面板
+   */
+  handleRemoveContainerClick = index => {
+    dispatch({
+      type: 'funcBoard/_removeContainer',
+      payload: {
+        index,
+      },
+    });
+  };
+
+  /**
+   * @author { FruitJ }
+   * @param { Number } parent_id 当前选中父节点列表项 id
+   * @param { Number } dataKey 当前被操作的父节点的 id
+   * @return { Void } 无返回值
+   * @description 将当前选中的值填充进模拟表单中，同时请求其父节点下面的数据
+   */
+  handlePutValToParentInputClick = (parent_id, dataKey) => {
+    dispatch({
+      type: 'funcBoard/_putValToParentInput',
+      payload: {
+        parent_id,
+        key: dataKey,
+      },
     });
   };
 
@@ -46,7 +87,10 @@ class TestFuncBoardRouter extends Component {
             key={index}
             data-key={index}
             dataKey={index}
+            board={this.props.funcBoard}
             onParentInputClick={this.handleParentInputClick}
+            onRemoveContainerClick={this.handleRemoveContainerClick}
+            onPutValToParentInputClick={this.handlePutValToParentInputClick}
           />
         ))}
         {/* 添加按钮组件 */}

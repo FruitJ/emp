@@ -1,52 +1,53 @@
 import React, { Component, useEffect } from 'react';
 import { Row, Col } from 'antd';
 import 'bootstrap/dist/css/bootstrap.css';
-// 容器组件
+import '../static/container.less';
 
+import HoverInputBoard from '@/pages/FuncComponent/component/HoverInputBoard';
+
+// 容器组件
 const Container = props => {
   useEffect(() => {
     console.log(`props dataKey: ${props.dataKey}`);
   }, []);
 
+  // 获取父级 input 框中数据的回调函数
   const handleParentInputClick = () => {
     console.log(`click: ${props.dataKey}`);
 
     // 请求父节点数据
-    props.onParentInputClick();
+    props.onParentInputClick(props.dataKey);
   };
 
+  // 移除 container 的回调函数
+  const handleRemoveContainerClick = () => {
+    alert(`remove: ${props.dataKey}`);
+    props.onRemoveContainerClick(props.dataKey);
+  };
+
+  let proxy_obj = props.board.containers[props.dataKey];
   return (
     <Row>
-      <Col span={12}>
+      <Col span={12} style={{ position: 'relative' }}>
         <div
           style={{ marginTop: '10px', padding: '7px 10px 7px 10px', backgroundColor: '#F8F8F8' }}
         >
-          <div
-            className="ele-input-specs"
-            style={{
-              position: 'relative',
-              backgroundColor: '#FFF',
-              width: '240px',
-              height: '32px',
-              lineHeight: '32px',
-            }}
-            onClick={handleParentInputClick}
-          >
-            <span className="ele-name" style={{ paddingLeft: '10px' }}>
-              元素
-            </span>
-            <span
-              className="hint caret"
-              style={{ position: 'absolute', right: '10px', top: '50%', marginTop: '-2px' }}
-            />
+          <div className="ele-input-specs" onClick={handleParentInputClick}>
+            <span className="ele-name">{proxy_obj.parentInputVal}</span>
+            <span className="hint caret" style={proxy_obj.hoverInputBoard_rotate} />
           </div>
-          <span
-            className="glyphicon glyphicon-remove"
-            style={{ position: 'absolute', right: 10, top: '50%', marginTop: '-3.5px' }}
-          >
+          <span className="glyphicon glyphicon-remove" onClick={handleRemoveContainerClick}>
             {' '}
           </span>
         </div>
+        <HoverInputBoard
+          list={proxy_obj.parentNames}
+          dataKey={props.dataKey}
+          board={props.board}
+          isCouldReqChildrenData={props.board.isCouldReqChildrenData}
+          boardStatus={proxy_obj.hoverInputBoard_status}
+          onPutValToParentInputClick={props.onPutValToParentInputClick}
+        />
       </Col>
     </Row>
   );

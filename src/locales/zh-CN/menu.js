@@ -55,4 +55,5 @@ export default {
   'menu.panel': '面板',
   'menu.table': '表格',
   'menu.board': '面板',
+  'menu.hoverBoard': '浮动选值面板',
 };

@@ -1,0 +1,47 @@
+:global .hover-container {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  z-index: 100;
+  width: 288px;
+  background-color: #fff;
+}
+:global .hover-content {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-left: 10px;
+  position: relative;
+  width: 288px;
+  max-height: 224px;
+}
+:global .hover-content input {
+  width: 267px;
+  height: 36px;
+  line-height: 36px;
+}
+:global .hover-content ul li div {
+  position: relative;
+  left: -40px;
+  padding: 7px 16px 7px 16px;
+  width: 267px;
+  height: 35px;
+  background-color: #fff;
+}
+:global .hover-content ul li:hover div {
+  background-color: #edf4ff;
+}
+:global .hover-content::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  border-left: 1px solid #d9d9d9;
+  border-top: 1px solid #d9d9d9;
+  background: #fafafa;
+}
+:global .hover-content::-webkit-scrollbar {
+  position: relative;
+  left: 30px;
+  width: 10px;
+  height: 224px;
+  border-radius: 20px;
+  background: #fff;
+}
+/*# sourceMappingURL=HoverInputBoard.css.map */

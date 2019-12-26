@@ -1,0 +1,23 @@
+:global .ele-input-specs {
+  position: relative;
+  background-color: #fff;
+  width: 288px;
+  height: 32px;
+  line-height: 32px;
+}
+:global .ele-input-specs span.ele-name {
+  padding-left: 10px;
+}
+:global .ele-input-specs span.hint {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -2px;
+}
+:global span.glyphicon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -3.5px;
+}
+/*# sourceMappingURL=container.css.map */
