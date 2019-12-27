@@ -44,9 +44,13 @@ const Container = props => {
           list={proxy_obj.parentNames}
           dataKey={props.dataKey}
           board={props.board}
+          value={proxy_obj.parentHoverInputVal}
           isCouldReqChildrenData={props.board.isCouldReqChildrenData}
           boardStatus={proxy_obj.hoverInputBoard_status}
           onPutValToParentInputClick={props.onPutValToParentInputClick}
+          onCheckInputNow={props.onCheckInputNow}
+          onCheckChineseInputStart={props.onCheckChineseInputStart}
+          onCheckChineseInputEnd={props.onCheckChineseInputEnd}
         />
       </Col>
     </Row>

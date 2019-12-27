@@ -10,10 +10,26 @@ const HoverInputBoard = props => {
     // 获取需要展示的数据
   }, []);
 
+  //
   const handlePutValToParentInputClick = parent_id => {
     alert(`parent_id: ${parent_id}`);
 
     props.onPutValToParentInputClick(parent_id, props.dataKey);
+  };
+
+  const handleCheckChineseInputStart = () => {
+    console.log('中文输入开始 ...');
+    props.onCheckChineseInputStart();
+  };
+
+  const handleCheckChineseInputEnd = () => {
+    console.log('中文输入结束 ...');
+    props.onCheckChineseInputEnd();
+  };
+
+  const handleCheckInputNow = ev => {
+    console.log('元素正在输入中 ...');
+    props.onCheckInputNow(ev.target.value, props.dataKey);
   };
 
   return (
@@ -32,6 +48,10 @@ const HoverInputBoard = props => {
               }}
             />
           }
+          value={props.value}
+          onCompositionStart={handleCheckChineseInputStart}
+          onCompositionEnd={handleCheckChineseInputEnd}
+          onChange={handleCheckInputNow}
         />
         <ul>
           {props.list !== undefined

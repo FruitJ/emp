@@ -78,6 +78,28 @@ class TestFuncBoardRouter extends Component {
     });
   };
 
+  handleCheckChineseInputStart = () => {
+    dispatch({
+      type: 'funcBoard/_checkChineseInputStart',
+    });
+  };
+
+  handleCheckChineseInputEnd = () => {
+    dispatch({
+      type: 'funcBoard/_checkChineseInputEnd',
+    });
+  };
+
+  handleCheckInputNow = (val, key) => {
+    dispatch({
+      type: 'funcBoard/_bindParentHoverInput',
+      payload: {
+        value: val,
+        key,
+      },
+    });
+  };
+
   render() {
     return (
       <div>
@@ -91,6 +113,9 @@ class TestFuncBoardRouter extends Component {
             onParentInputClick={this.handleParentInputClick}
             onRemoveContainerClick={this.handleRemoveContainerClick}
             onPutValToParentInputClick={this.handlePutValToParentInputClick}
+            onCheckInputNow={this.handleCheckInputNow}
+            onCheckChineseInputStart={this.handleCheckChineseInputStart}
+            onCheckChineseInputEnd={this.handleCheckChineseInputEnd}
           />
         ))}
         {/* 添加按钮组件 */}
