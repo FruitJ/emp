@@ -1,55 +1,91 @@
-import { loadParentNodeDataService } from '../../../services/board';
+// 官方包
 import { message } from 'antd';
 import UUID from 'uuidjs';
 
+// 自定义包
+import {
+  loadParentNodeDataService,
+  getNewParentNamesEleService,
+  loadChildNodeDataService,
+} from '../../../services/board';
+
+// 常量配置区
 const config_common_properties = {
   COUNT_CONTAINER: 3, // 允许生成的组件的数量
   ROTATE_UP: -180, // 三角标上旋角度
   ROTATE_DOWN: 0, // 三角标下旋角度
   DURATION_TIME: 0.5, // 动画过渡时间
 };
+
+// React Parent Input 输入时的中间临时变量
 let replace_str = '';
+
+// 组件的 modal
 export default {
   namespace: 'funcBoard',
   state: {
     count_addContainer: 0, // 添加 container 的数量
-    containers: [],
-    isCouldReqChildrenData: true,
-    isChineseInput: false,
-    transfer_parentNames: [],
-    backUp_parentNames: [],
+    containers: [], // 存储 container 的容器
+    isCouldReqChildrenData: true, // 是否可以请求子节点的数据
+    isChineseInput: false, // 是否是中文输入
+    transfer_parentNames: [], // 操作 parentNames ( 父节点选项数组 ) 的临时变量
+    backUp_parentNames: [], // 备份的 parentNames 数组
   },
   effects: {
     *loadParentNodeData({ payload: param }, { call, put }) {
+      // 加载父节点数据
       let res = yield call(loadParentNodeDataService);
-      console.log('--- 分割线 ---');
-      console.log(res);
-
-      alert('bingoogoog');
 
       yield put({
-        type: '_saveParentNodeData',
+        type: '_saveParentNodeData', // 存储父节点数据
         payload: {
           res,
           key: param.key,
         },
       });
     },
+    *getNewParentNamesEle({ payload: param }, { call, put }) {
+      let res = yield call(getNewParentNamesEleService, param);
+
+      console.log('-- 分割线 --');
+      console.log(res);
+
+      yield put({
+        type: '_updateParentNamesFirstEle',
+        payload: {
+          key: param.key,
+          res,
+        },
+      });
+    },
+    *loadChildNodeData({ payload: param }, { call, put }) {
+      let res = yield call(loadChildNodeDataService, {
+        parent_name: param.parent_name,
+        parent_id: param.parent_id,
+      });
+
+      console.log('子节点数据 ...');
+      console.log(res);
+    },
   },
   reducers: {
     _addContainer(state, {}) {
       // 添加 container
-      const { length: len } = state.containers;
+      const { length: len } = state.containers; // 解构 containers 容器的长度
       if (len < config_common_properties.COUNT_CONTAINER && len >= 0) {
+        // 添加 container 的条件
+        // 向 containers 容器中添加 container
         state.containers.push({
-          // 初始化 container 面板属性
-          hoverInputBoard_status: 'none',
-          hoverInputBoard_tag: false,
-          hoverInputBoard_rotate: {},
-          parentInputVal: '未选择',
-          prev_parentInputVal: '',
-          parentHoverInputVal: '',
-          prev_parentHoverInputVal: '',
+          // 初始化 container 的属性
+          hoverInputBoard_status: 'none', // 悬浮选值面板的状态 ( 显示/隐藏 )
+          hoverInputBoard_tag: false, // 悬浮选值面板的标记
+          hoverInputBoard_rotate: {}, // input 输入框的三角标的样式
+          parentInputVal: '未选择', // 父节点输入框的 value
+          prev_parentInputVal: '', // 上一次父节点输入框输入的 value
+          parentHoverInputVal: '', // 父节点悬浮选值面板输入框的 value
+          prev_parentHoverInputVal: '', // 上一次父节点悬浮选值面板输入框的 value
+          parentInputId: 0, // 父节点输入框的元素的 id
+          isSureParentNamesEle: false, // 父节点选择框中是否选择元素的标记
           // isCouldReqChildrenData: true,
         });
       }
@@ -57,30 +93,26 @@ export default {
     },
     _removeContainer(state, { payload: param }) {
       // 移除 container
-      console.log(`rm: ${param.index}`);
-      // 删除 container
       state.containers = state.containers.filter((item, index) => index !== param.index);
-
       return { ...state };
     },
     _saveParentNodeData(state, { payload: param }) {
       // 保存父节点数据
-
       // 为 param.res
       alert(`cc: ${param.key}`);
       // 动态向对应数据项中填充数据 ( key )
 
-      state.transfer_parentNames = param.res;
-      state.backUp_parentNames = JSON.parse(JSON.stringify(param.res));
-      state.containers[param.key].parentNames = state.transfer_parentNames;
+      state.transfer_parentNames = param.res; // 中转
+      state.backUp_parentNames = JSON.parse(JSON.stringify(param.res)); // 备份
+      state.containers[param.key].parentNames = state.transfer_parentNames; // 获取父节点数据
 
       // 动态更改 container 面板中悬浮选值面板和上旋/下旋三角标的状态
-
       let str = '', // 悬浮选值面板的状态样式
         tag = false, // 样式切换的标记
         rotate = null; // 三角标的动画样式
 
       if (!state.containers[param.key].hoverInputBoard_tag) {
+        // 此时处于关闭状态 -> 开启
         str = 'block';
         tag = true;
         rotate = {
@@ -102,11 +134,13 @@ export default {
           }
         });
       } else {
+        // 此时处于开启状态 -> 关闭
         str = 'none';
         tag = false;
         rotate = {
           transform: `rotate(${config_common_properties.ROTATE_DOWN}deg)`,
         };
+        // 当面板关闭的时候清空输入框中的值 ( 当前输入/上次输入 )
         state.containers[param.key].parentHoverInputVal = '';
         state.containers[param.key].prev_parentHoverInputVal = '';
         replace_str = '';
@@ -117,27 +151,55 @@ export default {
     },
     _putValToParentInput(state, { payload: param }) {
       // 将选中父节点的值放进父节点的 Input 框中
+
+      console.log('*************');
+      console.log(state.containers[param.key]);
       let temp_container = [];
 
       if (state.containers.length > 1) {
         // 多个 container 面板组件
+
         // 判断其他父节点表单输入框中的值是否重复
         temp_container = state.containers.filter((item, index) => index !== param.key);
+        console.log('-----------==-----');
+        console.log(state.containers[param.key].parentNames);
+        console.log(param.parent_name);
         if (
           temp_container.every(
-            (item, index) =>
-              item.parentInputVal !==
-              state.containers[param.key].parentNames[param.parent_id - 1].parent_name,
+            (item, index) => item.parentInputVal !== param.parent_name,
+            /*
+              item.parentInputVal !== state.containers[param.key].parentNames[param.parent_id - 1].parent_name,
+*/
           )
         ) {
           // 未添加过的相同的值
+          alert(0);
           // 更新 parent node 的 Input 框中的内容
+
+          state.containers[param.key].parentInputVal = param.parent_name;
+
+          // 可以开始请求子节点数据
+          state.isCouldReqChildrenData = true;
+
+          state.containers[param.key].parentInputId = param.parent_id;
+
+          state.containers[param.key].isSureParentNamesEle = true;
+
+          /*
           state.containers[param.key].parentInputVal =
             state.containers[param.key].parentNames[param.parent_id - 1].parent_name;
+*/
         } else {
           // 添加过相同的值
           message.warning('该选项已经添加过!');
+          state.isCouldReqChildrenData = false;
+          state.containers[param.key].isSureParentNamesEle = false;
         }
+      } else {
+        state.containers[param.key].parentInputVal = param.parent_name;
+        state.isCouldReqChildrenData = true;
+        state.containers[param.key].parentInputId = param.parent_id;
+        state.containers[param.key].isSureParentNamesEle = true;
       }
 
       // 获取输入框上一个输入的值
@@ -145,6 +207,7 @@ export default {
       return { ...state };
     },
     _bindParentHoverInput(state, { payload: param }) {
+      // 将父节点的 input 输入框与 modal 中的数据进行绑定
       state.containers[param.key].parentHoverInputVal = param.value;
 
       // 判断当前的输入状态是否为删除
@@ -159,14 +222,15 @@ export default {
         state.containers[param.key].prev_parentHoverInputVal.length >
           state.containers[param.key].parentHoverInputVal.length
       ) {
-        // alert("删除");
-        console.log('删除 ing ...');
-        // alert("删除");
-        //
+        // 删除中
         let temp = JSON.parse(JSON.stringify(state.backUp_parentNames));
         if (!state.containers[param.key].parentHoverInputVal) {
+          console.log('((((((((( 分割线  ))))))))))');
+          replace_str = '';
+          console.log(replace_str);
           state.containers[param.key].parentNames = temp;
         } else {
+          replace_str = '';
           console.log(state.containers[param.key].parentHoverInputVal);
           console.log(state.containers[param.key].parentNames);
           // let temp = JSON.parse(JSON.stringify(state.backUp_parentNames));
@@ -214,19 +278,15 @@ export default {
           state.containers[param.key].parentNames = includes;
         }
       } else {
-        // 添加表单中的内容
-        // alert("非删除");
+        // 添加
 
         // 创建新的 ParentNames 项
-        console.log('________________________---------------------------');
-        console.log(state.containers);
-
         let obj = {
           temp: 'temp',
           parent_id: UUID.generate(),
           parent_name: '',
         };
-        // let str = "";
+        // 判断当前输入是否为中文输入
         if (state.isChineseInput && param.value.split('')[param.value.length - 1] !== ' ') {
           // 中文输入
           // 更新 parentNames 列表数据
@@ -237,17 +297,27 @@ export default {
           addParentsNames(state, param, obj);
         }
       }
+
+      // 获取上一次悬浮选值面板的 input 中输入的内容
       state.containers[param.key].prev_parentHoverInputVal =
         state.containers[param.key].parentHoverInputVal;
       return { ...state };
     },
     _checkChineseInputStart(state, {}) {
-      // 设置中文输入标记
+      // 输入中文中
       state.isChineseInput = true;
       return { ...state };
     },
     _checkChineseInputEnd(state, {}) {
+      // 未输入中文
       state.isChineseInput = false;
+      return { ...state };
+    },
+    _updateParentNamesFirstEle(state, { payload: param }) {
+      state.containers[param.key].parentNames[0] = JSON.parse(JSON.stringify(param.res));
+
+      state.backUp_parentNames.push(JSON.parse(JSON.stringify(param.res)));
+
       return { ...state };
     },
   },

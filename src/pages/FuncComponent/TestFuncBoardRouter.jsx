@@ -68,14 +68,52 @@ class TestFuncBoardRouter extends Component {
    * @return { Void } 无返回值
    * @description 将当前选中的值填充进模拟表单中，同时请求其父节点下面的数据
    */
-  handlePutValToParentInputClick = (parent_id, dataKey) => {
+  handlePutValToParentInputClick = (parent_name, parent_id, dataKey) => {
+    alert(parent_name + '~~~');
     dispatch({
       type: 'funcBoard/_putValToParentInput',
       payload: {
+        parent_name,
         parent_id,
         key: dataKey,
       },
     });
+
+    // 判断 parentNames 中的第一个元素是否是临时添加的
+    console.log('fengexian');
+    console.log(this.props.funcBoard.containers[dataKey].parentNames);
+
+    const { parentNames } = this.props.funcBoard.containers[dataKey];
+
+    if (parentNames[0].temp !== undefined && Number.isNaN(Number(parentNames[0].parent_id))) {
+      alert('需要处理');
+      console.log('()()()--');
+      console.log(parentNames[0].parent_name);
+      // 发送当前元素值
+      dispatch({
+        type: 'funcBoard/getNewParentNamesEle',
+        payload: {
+          parent_name: parentNames[0].parent_name,
+          key: dataKey,
+        },
+      });
+    }
+
+    console.log('-- -- 分割线 -- --');
+    console.log(this.props.funcBoard.containers[dataKey].isSureParentNamesEle);
+    console.log(parentNames);
+
+    /*console.log(")() 分割线 ()(");
+    console.log(this.props.funcBoard.isCouldReqChildrenData);
+    const { isCouldReqChildrenData } = this.props.funcBoard;
+    if(isCouldReqChildrenData) { // 请求子节点数据
+      /!*dispatch({
+        type: "funcBoard/",
+        payload: ,
+      });*!/
+    }else {
+      console.warn("已经添加过该规格并且已经请求过数据了!");
+    }*/
   };
 
   handleCheckChineseInputStart = () => {
@@ -100,6 +138,35 @@ class TestFuncBoardRouter extends Component {
     });
   };
 
+  handleAddChildNodeClick = dataKey => {
+    const proxy_obj = this.props.funcBoard.containers[dataKey];
+
+    let id = Number(proxy_obj.parentInputId);
+    if (Number.isNaN(id)) {
+      id = proxy_obj.parentNames[proxy_obj.parentNames.length - 1].parent_id;
+    }
+
+    // 加载对应子节点数据
+    dispatch({
+      type: 'funcBoard/loadChildNodeData',
+      payload: {
+        parent_name: 'parentInputVal',
+        parent_id: id,
+        key: dataKey,
+      },
+    });
+
+    console.log('__ + 分割线 + __');
+    console.log(this.props.funcBoard.containers[dataKey].parentInputId);
+
+    const { parentNames } = this.props.funcBoard.containers[dataKey];
+
+    console.log(
+      parentNames[parentNames.length - 1].parent_id,
+      parentNames[parentNames.length - 1].parent_name,
+    );
+  };
+
   render() {
     return (
       <div>
@@ -116,6 +183,7 @@ class TestFuncBoardRouter extends Component {
             onCheckInputNow={this.handleCheckInputNow}
             onCheckChineseInputStart={this.handleCheckChineseInputStart}
             onCheckChineseInputEnd={this.handleCheckChineseInputEnd}
+            onAddChildNodeClick={this.handleAddChildNodeClick}
           />
         ))}
         {/* 添加按钮组件 */}

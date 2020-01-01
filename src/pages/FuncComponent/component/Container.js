@@ -3,7 +3,7 @@ import { Row, Col } from 'antd';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../static/container.less';
 
-import HoverInputBoard from '@/pages/FuncComponent/component/HoverInputBoard';
+import HoverInputBoard from '../../../pages/FuncComponent/component/HoverInputBoard';
 
 // 容器组件
 const Container = props => {
@@ -25,6 +25,10 @@ const Container = props => {
     props.onRemoveContainerClick(props.dataKey);
   };
 
+  const handleAddChildNodeClick = () => {
+    props.onAddChildNodeClick(props.dataKey);
+  };
+
   let proxy_obj = props.board.containers[props.dataKey];
   return (
     <Row>
@@ -39,6 +43,22 @@ const Container = props => {
           <span className="glyphicon glyphicon-remove" onClick={handleRemoveContainerClick}>
             {' '}
           </span>
+
+          {proxy_obj.isSureParentNamesEle ? (
+            <span
+              style={{
+                display: 'inline-block',
+                paddingTop: '15px',
+                width: '50px',
+                textAlign: 'center',
+                color: '#155BD3',
+                cursor: 'pointer',
+              }}
+              onClick={handleAddChildNodeClick}
+            >
+              + 添加
+            </span>
+          ) : null}
         </div>
         <HoverInputBoard
           list={proxy_obj.parentNames}
