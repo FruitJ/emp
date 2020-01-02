@@ -138,19 +138,22 @@ class TestFuncBoardRouter extends Component {
     });
   };
 
-  handleAddChildNodeClick = dataKey => {
-    const proxy_obj = this.props.funcBoard.containers[dataKey];
+  handleAddChildNodeClick = (dataKey, id) => {
+    // const proxy_obj = this.props.funcBoard.containers[dataKey];
 
-    let id = Number(proxy_obj.parentInputId);
-    if (Number.isNaN(id)) {
-      id = proxy_obj.parentNames[proxy_obj.parentNames.length - 1].parent_id;
-    }
+    // let id = Number(proxy_obj.parentInputId);
+    // if (Number.isNaN(id)) {
+    //     //   id = proxy_obj.parentNames[proxy_obj.parentNames.length - 1].parent_id;
+    //     // }
+
+    console.log('父节点索引 ...');
+    console.log(id, this.props.funcBoard.containers[dataKey].parentInputVal);
 
     // 加载对应子节点数据
     dispatch({
       type: 'funcBoard/loadChildNodeData',
       payload: {
-        parent_name: 'parentInputVal',
+        parent_name: this.props.funcBoard.containers[dataKey].parentInputVal,
         parent_id: id,
         key: dataKey,
       },
@@ -167,6 +170,61 @@ class TestFuncBoardRouter extends Component {
     );
   };
 
+  /*  handleChildInputClick = (key) => {
+  
+    // 关闭面板
+    dispatch({
+      type: "funcBoard/_removeChildHoverBoard",
+      payload: {
+        key,
+      }
+    });
+    
+  };*/
+
+  handleSwitchChildHoverBoardStatus = key => {
+    let tag = false;
+    // 切换子节点的悬浮选值面板的状态
+    if (this.props.funcBoard.containers[key].hoverChildInputBoard_tag) {
+      tag = false;
+    } else {
+      tag = true;
+    }
+    // 隐藏
+
+    // 更新子节点的悬浮选值面板的状态
+    dispatch({
+      type: 'funcBoard/_changeChildHoverBoardStatus',
+      payload: {
+        tag: tag,
+        key,
+      },
+    });
+
+    // 更新子节点的悬浮选值面板的样式
+    /*dispatch({
+      type: "funcBoard/_changeChildHoverBoardStyle",
+      payload: ,
+    });*/
+  };
+
+  handlePutValToChildInputClick = (child_name, child_id, dataKey) => {
+    console.log('^-_^_-^');
+    console.log(child_name, child_id, dataKey);
+
+    // 将选中的子节点数据填充进容器
+    dispatch({
+      type: 'funcBoard/_tempSaveSelectedChildNodeData',
+      payload: {
+        child_name,
+        child_id,
+        key: dataKey,
+      },
+    });
+  };
+
+  handleRemoveAfterNative_childNames = () => {};
+
   render() {
     return (
       <div>
@@ -180,10 +238,14 @@ class TestFuncBoardRouter extends Component {
             onParentInputClick={this.handleParentInputClick}
             onRemoveContainerClick={this.handleRemoveContainerClick}
             onPutValToParentInputClick={this.handlePutValToParentInputClick}
+            onPutValToChildInputClick={this.handlePutValToChildInputClick}
             onCheckInputNow={this.handleCheckInputNow}
             onCheckChineseInputStart={this.handleCheckChineseInputStart}
             onCheckChineseInputEnd={this.handleCheckChineseInputEnd}
             onAddChildNodeClick={this.handleAddChildNodeClick}
+            // onChildInputClick={this.handleChildInputClick}
+            onSwitchChildHoverBoardStatus={this.handleSwitchChildHoverBoardStatus}
+            onRemoveAfterNative_childNames={this.handleRemoveAfterNative_childNames}
           />
         ))}
         {/* 添加按钮组件 */}

@@ -2,26 +2,32 @@ let dataSource = [
   {
     parent_id: 1,
     parent_name: '颜色',
+    id: 1,
   },
   {
     parent_id: 2,
     parent_name: '尺寸',
+    id: 2,
   },
   {
     parent_id: 3,
     parent_name: '版本',
+    id: 3,
   },
   {
     parent_id: 4,
     parent_name: 'color',
+    id: 4,
   },
   {
     parent_id: 5,
     parent_name: 'size',
+    id: 5,
   },
   {
     parent_id: 6,
     parent_name: 'version',
+    id: 6,
   },
 ];
 
@@ -30,16 +36,55 @@ let childDataSource = [
     parent_id: 1,
     child_name: '红色',
     child_id: 1,
+    id: 1,
   },
   {
     parent_id: 1,
     child_name: '蓝色',
     child_id: 2,
+    id: 2,
   },
   {
     parent_id: 1,
     child_name: '紫色',
     child_id: 3,
+    id: 3,
+  },
+  {
+    parent_id: 2,
+    child_name: '32 寸',
+    child_id: 1,
+    id: 1,
+  },
+  {
+    parent_id: 2,
+    child_name: '56 寸',
+    child_id: 2,
+    id: 2,
+  },
+  {
+    parent_id: 2,
+    child_name: '128 寸',
+    child_id: 3,
+    id: 3,
+  },
+  {
+    parent_id: 3,
+    child_name: '7.0',
+    child_id: 1,
+    id: 1,
+  },
+  {
+    parent_id: 3,
+    child_name: '8.0',
+    child_id: 2,
+    id: 2,
+  },
+  {
+    parent_id: 3,
+    child_name: '9.0',
+    child_id: 3,
+    id: 3,
   },
 ];
 
