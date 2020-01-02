@@ -171,7 +171,7 @@ class TestFuncBoardRouter extends Component {
   };
 
   /*  handleChildInputClick = (key) => {
-  
+
     // 关闭面板
     dispatch({
       type: "funcBoard/_removeChildHoverBoard",
@@ -179,7 +179,7 @@ class TestFuncBoardRouter extends Component {
         key,
       }
     });
-    
+
   };*/
 
   handleSwitchChildHoverBoardStatus = key => {
@@ -223,7 +223,16 @@ class TestFuncBoardRouter extends Component {
     });
   };
 
-  handleRemoveAfterNative_childNames = () => {};
+  handleRemoveAfterNative_childNames = (item, key) => {
+    // 删除当前选项
+    dispatch({
+      type: 'funcBoard/_removeAfterNative_childNames',
+      payload: {
+        item,
+        key,
+      },
+    });
+  };
 
   render() {
     return (

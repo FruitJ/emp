@@ -439,6 +439,18 @@ export default {
 
       return { ...state };
     },
+    _removeAfterNative_childNames(state, { payload: param }) {
+      alert('__');
+      state.containers[param.key].afterNative_childNames = state.containers[
+        param.key
+      ].afterNative_childNames.filter((item, index) => {
+        console.log('[{ 分割线 }]');
+        console.log(item.child_id, param.item.child_id);
+        console.log(item.child_name, param.item.child_name);
+        return item.child_id !== param.item.child_id && item.child_name !== param.item.child_name;
+      });
+      return { ...state };
+    },
   },
   subscriptions: {},
 };

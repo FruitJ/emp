@@ -54,9 +54,15 @@ const Container = props => {
     props.onSwitchChildHoverBoardStatus(props.dataKey);
   };
 
-  const handleRemoveAfterNative_childNames = () => {
+  const handleRemoveAfterNative_childNames = (ev, item) => {
+    // 阻止事件传播
+    ev.stopPropagation();
+
+    console.log('删除选中的项 ...');
+    console.log(item);
+
     // 删除待选子节点数组中的选中的元素
-    props.onRemoveAfterNative_childNames();
+    props.onRemoveAfterNative_childNames(item, props.dataKey);
   };
 
   let proxy_obj = props.board.containers[props.dataKey];
@@ -139,8 +145,8 @@ const Container = props => {
                               paddingRight: '5px',
                               lineHeight: '25px',
                             }}
-                            onClick={() => {
-                              handleRemoveAfterNative_childNames(item);
+                            onClick={ev => {
+                              handleRemoveAfterNative_childNames(ev, item);
                             }}
                           >
                             &times;
