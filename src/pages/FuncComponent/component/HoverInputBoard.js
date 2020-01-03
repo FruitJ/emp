@@ -57,6 +57,8 @@ const HoverInputBoard = props => {
           {props.list !== undefined
             ? props.list.map((item, index) => (
                 <li key={item.id}>
+                  {console.log('__( * 分割线 * )__')}
+                  {console.log(item.id)}
                   <div
                     onClick={() => {
                       handlePutValToParentInputClick(

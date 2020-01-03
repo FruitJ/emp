@@ -53,42 +53,43 @@ let childDataSource = [
   {
     parent_id: 2,
     child_name: '32 寸',
-    child_id: 1,
-    id: 1,
+    child_id: 4,
+    id: 4,
   },
   {
     parent_id: 2,
     child_name: '56 寸',
-    child_id: 2,
-    id: 2,
+    child_id: 5,
+    id: 5,
   },
   {
     parent_id: 2,
     child_name: '128 寸',
-    child_id: 3,
-    id: 3,
+    child_id: 6,
+    id: 6,
   },
   {
     parent_id: 3,
     child_name: '7.0',
-    child_id: 1,
-    id: 1,
+    child_id: 7,
+    id: 7,
   },
   {
     parent_id: 3,
     child_name: '8.0',
-    child_id: 2,
-    id: 2,
+    child_id: 8,
+    id: 8,
   },
   {
     parent_id: 3,
     child_name: '9.0',
-    child_id: 3,
-    id: 3,
+    child_id: 9,
+    id: 9,
   },
 ];
 
 let count = dataSource.length;
+let num = childDataSource.length;
 
 module.exports = {
   ['POST /api/loadParentNodeDataService'](req, res) {
@@ -104,11 +105,13 @@ module.exports = {
       dataSource.push({
         parent_id: count,
         parent_name: req.body.parent_name,
+        id: count,
       });
 
       res.status(200).json({
         parent_id: count,
         parent_name: req.body.parent_name,
+        id: count,
       });
     }
   },
@@ -120,5 +123,22 @@ module.exports = {
       (item, index) => item.parent_id === Number(req.body.parent_id),
     );
     res.status(200).json(data);
+  },
+  ['POST /api/getNewChildNamesEleService'](req, res) {
+    console.log('/api/getNewChildNamesEleService');
+    console.log(req.body);
+
+    let { temp_addEle } = req.body;
+    temp_addEle = temp_addEle.map((item, index) => {
+      num += 1;
+
+      return {
+        child_id: num,
+        child_name: item.child_name,
+        id: num,
+      };
+    });
+    // console.log(Array.from(req.body));
+    res.status(200).json(temp_addEle);
   },
 };

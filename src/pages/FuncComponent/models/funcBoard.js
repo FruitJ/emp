@@ -7,6 +7,7 @@ import {
   loadParentNodeDataService,
   getNewParentNamesEleService,
   loadChildNodeDataService,
+  getNewChildNamesEleService,
 } from '../../../services/board';
 
 // 常量配置区
@@ -82,6 +83,31 @@ export default {
         },
       });
     },
+    *getNewChildNamesEle({ payload: param }, { call, put }) {
+      // 替换 id 元素
+      let res = yield call(getNewChildNamesEleService, {
+        temp_addEle: param.temp_addEle.map((item, index) => ({ child_name: item.child_name })),
+      });
+
+      console.log('getNewChildNamesEle ...');
+      console.log(param.temp_addEle.map((item, index) => ({ child_name: item.child_name })));
+
+      console.log(`返回值:`);
+      console.log(res);
+      console.log();
+
+      console.log(param.key);
+      console.log(param.temp_addEle);
+
+      // 替换集合元素
+      yield put({
+        type: '_replaceChildEleId',
+        payload: {
+          temp_addEle: res,
+          key: param.key,
+        },
+      });
+    },
   },
   reducers: {
     _addContainer(state, {}) {
@@ -103,11 +129,16 @@ export default {
           childInputVal: '未选择',
           isChineseInput: false,
           afterNative_childNames: [],
+          real_childNames: [],
           prev_parentInputVal: '', // 上一次父节点输入框输入的 value
+          prev_childInputVal: '', // 上一次子节点输入框输入的 value
           parentHoverInputVal: '', // 父节点悬浮选值面板输入框的 value
+          childHoverInputVal: '', // 子节点悬浮选值面板输入框的 value
           prev_parentHoverInputVal: '', // 上一次父节点悬浮选值面板输入框的 value
+          prev_childHoverInputVal: '', // 上一次子节点悬浮选值面板输入框的 value
           parentInputId: 0, // 父节点输入框的元素的 id
           isSureParentNamesEle: false, // 父节点选择框中是否选择元素的标记
+          isHaveTempCreatedEle: false,
           // isCouldReqChildrenData: true,
         });
       }
@@ -122,6 +153,9 @@ export default {
       // 保存父节点数据
       // 为 param.res
       alert(`cc: ${param.key}`);
+      console.log('__+ 分割线 +__');
+      console.log(param);
+
       // 动态向对应数据项中填充数据 ( key )
 
       state.transfer_parentNames = param.res; // 中转
@@ -335,6 +369,21 @@ export default {
         state.containers[param.key].parentHoverInputVal;*/
       return { ...state };
     },
+    _bindChildHoverInput(state, { payload: param }) {
+      console.log('child bind input val');
+      console.log(param);
+      bindHoverInput(state, param, {
+        hoverInputVal: 'childHoverInputVal',
+        prev_hoverInputVal: 'prev_childHoverInputVal',
+        backUp_names: 'backUp_childNames',
+        names: 'childNames',
+        name: 'child_name',
+        id: 'child_id',
+        isChinese: 'isChineseInput',
+      });
+      return { ...state };
+    },
+
     _checkChineseInputStart(state, {}) {
       // 输入中文中
       state.isChineseInput = true;
@@ -451,6 +500,134 @@ export default {
       });
       return { ...state };
     },
+    _cancelChildHoverBoard(state, { payload: param }) {
+      alert(1111111);
+      state.containers[param.key].outsideChildInputBoard_status = 'none';
+      // let rotate = {
+      //   transform: `rotate(${config_common_properties.ROTATE_DOWN}deg)`,
+      // };
+      // rotate.transitionDuration = `${config_common_properties.DURATION_TIME}s`;
+      // changeChildHoverInputBoardStyle('none', false, rotate, param.key, state);
+      return { ...state };
+    },
+    _judgeTempCreatedEle(state, { payload: param }) {
+      // isHaveTempCreatedEle
+
+      state.containers[param.key].isHaveTempCreatedEle = state.containers[
+        param.key
+      ].afterNative_childNames.some((item, index) => Number.isNaN(Number(item.child_id)));
+
+      console.log('| 分割线 |');
+      console.log(state.containers[param.key].afterNative_childNames);
+
+      return { ...state };
+    },
+    _replaceChildEleId(state, { payload: param }) {
+      console.log('_replaceChildEleId ................');
+      console.log(state.containers[param.key].afterNative_childNames);
+      console.log(param.temp_addEle);
+
+      // 替换元素
+      let len = state.containers[param.key].afterNative_childNames.length;
+      for (let i = 0; i < len; i++) {
+        console.warn('----------()----------');
+        for (let j = 0; j < param.temp_addEle.length; j++) {
+          console.warn('----------(1)----------');
+          console.log(
+            param.temp_addEle[j].child_name,
+            state.containers[param.key].afterNative_childNames[i].child_name,
+          );
+          if (
+            param.temp_addEle[j].child_name ===
+            state.containers[param.key].afterNative_childNames[i].child_name
+          ) {
+            // 替换
+            state.containers[param.key].afterNative_childNames[i] = JSON.parse(
+              JSON.stringify(param.temp_addEle[j]),
+            );
+          }
+        }
+      }
+
+      // 判断当前将要添加的元素是否在 afterNative_childNames 中重复
+      /*state.containers[param.key].real_childNames.forEach((item, index) => {
+        if(item.child_name === ) {
+        
+        }
+      });*/
+      let arr = [];
+      console.log('%%%');
+
+      /*      if(state.containers[param.key].real_childNames.length === 0) {
+        state.containers[param.key].real_childNames.push(...state.containers[param.key].afterNative_childNames);
+      }else {
+        for(let i = 0; i < state.containers[param.key].real_childNames.length; i++) {
+          for(let j = 0; j < state.containers[param.key].afterNative_childNames.length; j++) {
+            console.log(state.containers[param.key].real_childNames[i].child_name, state.containers[param.key].afterNative_childNames[j].child_name);
+            if(state.containers[param.key].real_childNames[i].child_name !== state.containers[param.key].afterNative_childNames[j].child_name) {
+        
+              arr.push(state.containers[param.key].afterNative_childNames[j]);
+            }
+          }
+        }
+      }*/
+
+      state.containers[param.key].real_childNames.push(...arr);
+
+      console.log('替换完成 ...'); // real_childNames
+      console.log(state.containers[param.key].real_childNames);
+      console.log(state.containers[param.key].afterNative_childNames);
+
+      state.containers[param.key].real_childNames = JSON.parse(
+        JSON.stringify(state.containers[param.key].afterNative_childNames),
+      );
+
+      return { ...state };
+    },
+    _realAddChildEle(state, { payload: param }) {
+      let arr = [];
+      if (state.containers[param.key].real_childNames.length === 0) {
+        state.containers[param.key].real_childNames.push(
+          ...state.containers[param.key].afterNative_childNames,
+        );
+      } else {
+        let names = state.containers[param.key].real_childNames.map(
+          (item, index) => item.child_name,
+        );
+
+        for (let i = 0; i < state.containers[param.key].afterNative_childNames.length; i++) {
+          if (
+            names.indexOf(state.containers[param.key].afterNative_childNames[i].child_name) === -1
+          ) {
+            arr.push(state.containers[param.key].afterNative_childNames[i]);
+          }
+        }
+
+        console.log('分割线-');
+        console.log(arr);
+        console.log(state.containers[param.key].real_childNames);
+        console.log(state.containers[param.key].afterNative_childNames);
+      }
+      state.containers[param.key].real_childNames.push(...arr);
+
+      // 关闭悬浮选值面板
+      state.containers[param.key].outsideChildInputBoard_status = 'none';
+
+      // 清空数据项
+      // state.containers[param.key].afterNative_childNames = [];
+      // state.containers[param.key].childHoverInputVal = '';
+      // state.containers[param.key].prev_childHoverInputVal = '';
+
+      return { ...state };
+    },
+    _removeReal_childNames(state, { payload: param }) {
+      // 删除元素
+      state.containers[param.key].real_childNames = state.containers[
+        param.key
+      ].real_childNames.filter((item, index) => item.child_name !== param.item.child_name);
+
+      return { ...state };
+    },
   },
   subscriptions: {},
 };
@@ -501,11 +678,16 @@ const addParentsNames = (state, param, obj, config) => {
       }
       // 再添加
       obj[config.name] = replace_str;
+
+      console.log('&&&&');
+      console.log(obj);
       includes.unshift(obj);
     }
   } else {
     // 添加新元素
     obj[config.name] = replace_str;
+    console.log('^^^^');
+    console.log(obj);
     includes.unshift(obj);
   }
   console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
@@ -596,10 +778,12 @@ const bindHoverInput = (state, param, config) => {
       console.log('() 分割线 ()');
       console.log(includes);
 
+      let uuid = UUID.generate();
       let obj = {
         temp: 'temp',
-        [config.id]: UUID.generate(),
-        [config.name]: [config.hoverInputVal],
+        [config.id]: uuid,
+        [config.name]: state.containers[param.key][config.hoverInputVal],
+        id: uuid,
       };
       // alert(0);
       console.log('#分割线#');
@@ -637,10 +821,12 @@ const bindHoverInput = (state, param, config) => {
     // 添加
 
     // 创建新的 ParentNames 项
+    let uuid = UUID.generate();
     let obj = {
       temp: 'temp',
-      [config.id]: UUID.generate(),
+      [config.id]: uuid,
       [config.name]: '',
+      id: uuid,
     };
     // 判断当前输入是否为中文输入
     if (state[config.isChinese] && param.value.split('')[param.value.length - 1] !== ' ') {

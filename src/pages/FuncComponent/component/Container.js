@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useRef } from 'react';
 import { Row, Col } from 'antd';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../static/container.less';
@@ -65,6 +65,25 @@ const Container = props => {
     props.onRemoveAfterNative_childNames(item, props.dataKey);
   };
 
+  const handleCancelChildHoverBoard = () => {
+    props.onCancelChildHoverBoard(props.dataKey);
+  };
+
+  const handleAddChildNamesToRealArea = () => {
+    props.onAddChildNamesToRealArea(props.dataKey);
+  };
+
+  const handleRemoveReal_childNames = (ev, item) => {
+    // 删除元素
+    ev.stopPropagation();
+    console.log('((((***********(((((((((');
+    console.log(item);
+    console.log(props.board.containers[props.dataKey].afterNative_childNames);
+    console.log(props.board.containers[props.dataKey].real_childNames);
+
+    props.onRemoveReal_childNames(item, props.dataKey);
+  };
+
   let proxy_obj = props.board.containers[props.dataKey];
   return (
     <Row>
@@ -82,6 +101,38 @@ const Container = props => {
 
           {proxy_obj.isSureParentNamesEle ? (
             <>
+              {proxy_obj.real_childNames.length !== 0
+                ? proxy_obj.real_childNames.map((item, index) => (
+                    <span
+                      key={item.child_id}
+                      style={{
+                        display: 'inline-block',
+                        marginLeft: '5px',
+                        marginBottom: '5px',
+                        width: '80px',
+                        height: '25px',
+                        lineHeight: '25px',
+                        border: '1px solid rgba(0, 0, 0, 0.5)',
+                        borderRadius: '6px',
+                      }}
+                    >
+                      {item.child_name}
+
+                      <span
+                        className="close"
+                        style={{
+                          paddingRight: '5px',
+                          lineHeight: '25px',
+                        }}
+                        onClick={ev => {
+                          handleRemoveReal_childNames(ev, item);
+                        }}
+                      >
+                        &times;
+                      </span>
+                    </span>
+                  ))
+                : null}
               <span
                 style={{
                   display: 'inline-block',
@@ -107,17 +158,18 @@ const Container = props => {
                   style={{
                     paddingLeft: '10px',
                     width: '308px',
-                    height: '75px',
+                    // height: '75px',
                     background: '#FFF',
                     boxShadow: '0 2px 8px 0 rgba(200,201,204,.5)',
                   }}
                 >
                   <div
-                    className="ele-input-specs"
+                    className="ele-input-specs child-input"
                     onClick={handleSwitchChildHoverBoardStatus}
                     style={{
-                      position: 'absolute',
+                      position: 'relative',
                       zIndex: '1000',
+                      height: 'auto',
                       boxShadow: '0 2px 8px 0 rgba(200,201,204,.5)',
                     }}
                   >
@@ -156,27 +208,40 @@ const Container = props => {
                     )}
 
                     <span className="hint caret" style={proxy_obj.hoverChildInputBoard_rotate} />
-                    <div
-                      style={{
-                        paddingLeft: '150px',
-                        paddingTop: '5px',
-                      }}
-                    >
-                      <button className="btn btn-default">取消</button>
+                  </div>
+                  <div
+                    style={{
+                      position: 'relative',
+                      paddingTop: '5px',
+                      paddingLeft: '150px',
+                      paddingBottom: '5px',
+                    }}
+                  >
+                    <button className="btn btn-default" onClick={handleCancelChildHoverBoard}>
+                      取消
+                    </button>
 
-                      <button className="btn btn-primary" style={{ marginLeft: '20px' }}>
-                        确定
-                      </button>
-                    </div>
+                    <button
+                      className="btn btn-primary"
+                      style={{ marginLeft: '20px' }}
+                      onClick={handleAddChildNamesToRealArea}
+                    >
+                      确定
+                    </button>
                   </div>
                 </div>
 
-                <div style={{ position: 'absolute', zIndex: '1090', top: '-18px', left: '0px' }}>
+                <div style={{ position: 'relative', zIndex: '1', top: '-93px', left: '0px' }}>
                   <HoverInputBoard
                     list={proxy_obj.childNames}
                     dataKey={props.dataKey}
+                    board={props.board}
+                    value={proxy_obj.childHoverInputVal}
                     boardStatus={proxy_obj.hoverChildInputBoard_status}
                     onPutValToParentInputClick={props.onPutValToChildInputClick}
+                    onCheckInputNow={props.onChildCheckInputNow}
+                    onCheckChineseInputStart={props.onCheckChineseInputStart}
+                    onCheckChineseInputEnd={props.onCheckChineseInputEnd}
                   />
                   {/*
                 <HoverInputBoard list={proxy_obj.parentNames[(id - 1) >= 0 ? id - 1 : 0].childNames}

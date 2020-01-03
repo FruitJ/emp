@@ -116,21 +116,34 @@ class TestFuncBoardRouter extends Component {
     }*/
   };
 
+  // 检测中文输入
   handleCheckChineseInputStart = () => {
     dispatch({
       type: 'funcBoard/_checkChineseInputStart',
     });
   };
 
+  // 检测中文输出
   handleCheckChineseInputEnd = () => {
     dispatch({
       type: 'funcBoard/_checkChineseInputEnd',
     });
   };
 
+  // 检测正在输入
   handleCheckInputNow = (val, key) => {
     dispatch({
       type: 'funcBoard/_bindParentHoverInput',
+      payload: {
+        value: val,
+        key,
+      },
+    });
+  };
+
+  handleChildCheckInputNow = (val, key) => {
+    dispatch({
+      type: 'funcBoard/_bindChildHoverInput',
       payload: {
         value: val,
         key,
@@ -212,6 +225,8 @@ class TestFuncBoardRouter extends Component {
     console.log('^-_^_-^');
     console.log(child_name, child_id, dataKey);
 
+    console.log(document.querySelectorAll('.child-input'));
+
     // 将选中的子节点数据填充进容器
     dispatch({
       type: 'funcBoard/_tempSaveSelectedChildNodeData',
@@ -234,6 +249,63 @@ class TestFuncBoardRouter extends Component {
     });
   };
 
+  handleCancelChildHoverBoard = key => {
+    dispatch({
+      type: 'funcBoard/_cancelChildHoverBoard',
+      payload: {
+        key,
+      },
+    });
+  };
+
+  handleAddChildNamesToRealArea = key => {
+    // 判断当前数组中的元素是否有临时生成的元素
+    dispatch({
+      type: 'funcBoard/_judgeTempCreatedEle',
+      payload: {
+        key,
+      },
+    });
+    if (this.props.funcBoard.containers[key].isHaveTempCreatedEle) {
+      alert('有临时生成的元素');
+      // 有，则先将该元素提交给后台并由后台返回一个已经替换了 id 的元素
+
+      let temp_addEle = this.props.funcBoard.containers[key].afterNative_childNames.filter(
+        (item, index) => Number.isNaN(Number(item.child_id)),
+      );
+
+      // 替换上传元素的 id
+      dispatch({
+        type: 'funcBoard/getNewChildNamesEle',
+        payload: {
+          key,
+          temp_addEle,
+        },
+      });
+      // console.log("临时添加的元素");
+
+      // console.log(this.props.funcBoard.containers[key].afterNative_childNames.filter((item, index) => Number.isNaN(Number(item.child_id))));
+    }
+    // 将待选区域的标签移至真实区域 ( 同时清空待选区域数组 )
+    dispatch({
+      type: 'funcBoard/_realAddChildEle',
+      payload: {
+        key,
+      },
+    });
+    // 删除真实区域
+  };
+
+  handleRemoveReal_childNames = (item, key) => {
+    dispatch({
+      type: 'funcBoard/_removeReal_childNames',
+      payload: {
+        item,
+        key,
+      },
+    });
+  };
+
   render() {
     return (
       <div>
@@ -249,12 +321,16 @@ class TestFuncBoardRouter extends Component {
             onPutValToParentInputClick={this.handlePutValToParentInputClick}
             onPutValToChildInputClick={this.handlePutValToChildInputClick}
             onCheckInputNow={this.handleCheckInputNow}
+            onChildCheckInputNow={this.handleChildCheckInputNow}
             onCheckChineseInputStart={this.handleCheckChineseInputStart}
             onCheckChineseInputEnd={this.handleCheckChineseInputEnd}
             onAddChildNodeClick={this.handleAddChildNodeClick}
             // onChildInputClick={this.handleChildInputClick}
             onSwitchChildHoverBoardStatus={this.handleSwitchChildHoverBoardStatus}
             onRemoveAfterNative_childNames={this.handleRemoveAfterNative_childNames}
+            onCancelChildHoverBoard={this.handleCancelChildHoverBoard}
+            onAddChildNamesToRealArea={this.handleAddChildNamesToRealArea}
+            onRemoveReal_childNames={this.handleRemoveReal_childNames}
           />
         ))}
         {/* 添加按钮组件 */}

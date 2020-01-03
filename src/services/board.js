@@ -29,3 +29,13 @@ export async function loadChildNodeDataService(param) {
     },
   });
 }
+
+export async function getNewChildNamesEleService(param) {
+  return request('/api/getNewChildNamesEleService', {
+    method: 'POST',
+    body: qs.stringify(param),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+}
