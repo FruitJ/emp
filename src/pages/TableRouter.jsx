@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Table } from 'antd';
+import { Table, Button } from 'antd';
+import { connect } from 'dva';
 
 const columns = [
   {
-    title: 'Name',
+    title: '颜色',
     // colSpan: 0,
-    dataIndex: 'name',
+    dataIndex: 'color',
     render: (value, row, index) => {
       const obj = {
         children: value,
@@ -15,10 +16,10 @@ const columns = [
       console.log(row);
       console.log(index);
       if (index === 0) {
-        obj.props.rowSpan = 2;
+        // obj.props.rowSpan = 2;
       }
       if (index === 1) {
-        obj.props.rowSpan = 0;
+        // obj.props.rowSpan = 0;
       }
       /*if( index === 2 ) {
 				obj.props.rowSpan = 0;
@@ -27,39 +28,39 @@ const columns = [
     },
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
+    title: '尺寸',
+    dataIndex: 'size',
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
+    title: '版本',
+    dataIndex: 'version',
   },
 ];
 
 const data = [
-  {
+  /* {
     key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
+    color: '红色',
+    size: '32 寸',
+    version: '7.0',
+  },*/
   {
     key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
+    color: '红色',
+    size: '42 寸',
+    version: '8.0',
   },
   {
     key: '5',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
+    color: '蓝色',
+    size: '56 寸',
+    version: '9.0',
   },
   {
     key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
+    color: '黑色',
+    size: '128 寸',
+    version: '11.0',
   },
 ];
 
@@ -68,12 +69,40 @@ class TableRouter extends Component {
     super(props);
   }
 
+  /*  handleRmSize32 = () => {
+    
+    this.props.dispatch({
+      type: "table/_rmSize32",
+      payload: {
+        target: "32 寸",
+        payload: {
+          columns,
+          data,
+        },
+      },
+    });
+  };*/
+
+  handleCreatedTable = () => {
+    this.props.dispatch({
+      type: 'table/createTable',
+    });
+  };
+
   render() {
     return (
       <div>
-        <Table columns={columns} dataSource={data} size="middle" />
+        {/*<Table columns={columns} dataSource={data} size="middle" />
+        
+        <Button type="primary" onClick={ this.handleRmSize32 }>删除 32 寸</Button>*/}
+
+        <Button type="primary" onClick={this.handleCreatedTable}>
+          点击生成表格
+        </Button>
       </div>
     );
   }
 }
-export default TableRouter;
+export default connect(({ table }) => ({
+  table,
+}))(TableRouter);
