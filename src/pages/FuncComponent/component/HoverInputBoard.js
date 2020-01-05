@@ -11,10 +11,10 @@ const HoverInputBoard = props => {
   }, []);
 
   //
-  const handlePutValToParentInputClick = (parent_name, parent_id) => {
-    alert(`parent_id: ${parent_name}`);
+  const handlePutValToParentInputClick = (name, id, parent_id) => {
+    // alert(`parent_id: ${parent_name}`);
 
-    props.onPutValToParentInputClick(parent_name, parent_id, props.dataKey);
+    props.onPutValToParentInputClick(name, id, props.dataKey, parent_id);
   };
 
   const handleCheckChineseInputStart = () => {
@@ -64,6 +64,8 @@ const HoverInputBoard = props => {
                       handlePutValToParentInputClick(
                         item.child_name === undefined ? item.parent_name : item.child_name,
                         item.id,
+                        // item.parent_id,
+                        item.child_name !== undefined ? item.parent_id : null,
                       );
                     }}
                   >

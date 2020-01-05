@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import AddBoardBtn from './component/AddBoardBtn';
 import Container from './component/Container';
 import './static/TestFuncBoardRouterd.less';
+import { Table } from 'antd';
 /**
  * @author FruitJ
  */
@@ -221,7 +222,7 @@ class TestFuncBoardRouter extends Component {
     });*/
   };
 
-  handlePutValToChildInputClick = (child_name, child_id, dataKey) => {
+  handlePutValToChildInputClick = (child_name, child_id, dataKey, parent_id) => {
     console.log('^-_^_-^');
     console.log(child_name, child_id, dataKey);
 
@@ -234,6 +235,7 @@ class TestFuncBoardRouter extends Component {
         child_name,
         child_id,
         key: dataKey,
+        parent_id,
       },
     });
   };
@@ -293,6 +295,10 @@ class TestFuncBoardRouter extends Component {
         key,
       },
     });
+
+    console.log('___________ 分割线___________');
+    console.log(this.props.funcBoard.containers[key].afterNative_childNames);
+
     // 删除真实区域
   };
 
@@ -335,6 +341,13 @@ class TestFuncBoardRouter extends Component {
         ))}
         {/* 添加按钮组件 */}
         <AddBoardBtn onAddComponentClick={this.handleAddComponentClick} />
+
+        <Table
+          columns={this.props.funcBoard.columns}
+          dataSource={this.props.funcBoard.data}
+          size="middle"
+          pagination={false}
+        />
       </div>
     );
   }

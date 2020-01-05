@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useRef } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Table } from 'antd';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../static/container.less';
 
@@ -87,7 +87,7 @@ const Container = props => {
   let proxy_obj = props.board.containers[props.dataKey];
   return (
     <Row>
-      <Col span={12} style={{ position: 'relative' }}>
+      <Col span={12} style={{ position: 'relative', zIndex: '99999' }}>
         <div
           style={{ marginTop: '10px', padding: '7px 10px 7px 10px', backgroundColor: '#F8F8F8' }}
         >

@@ -33,6 +33,10 @@ export default {
     backUp_parentNames: [], // 备份的 parentNames 数组
     transfer_childNames: [], // 操作 parentNames ( 子节点选项数组 ) 的临时变量
     backUp_childNames: [], // 备份的 childNames 数组
+
+    dataSource: [],
+    data: [],
+    columns: [],
   },
   effects: {
     *loadParentNodeData({ payload: param }, { call, put }) {
@@ -412,6 +416,9 @@ export default {
       });*/
       state.containers[param.key].childNames = state.transfer_childNames;
 
+      console.warn('$_ 分割线 _$');
+      console.log(state.containers[param.key].childNames);
+
       // 显示子节点的悬浮选值面板
       // state.containers[param.key].hoverChildInputBoard_status = 'block';
 
@@ -476,6 +483,7 @@ export default {
             child_name: param.child_name,
             child_id: param.child_id,
             id: param.child_id,
+            parent_id: param.parent_id,
           });
         }
       } else {
@@ -483,6 +491,7 @@ export default {
           child_name: param.child_name,
           child_id: param.child_id,
           id: param.child_id,
+          parent_id: param.parent_id,
         });
       }
 
@@ -552,7 +561,7 @@ export default {
       // 判断当前将要添加的元素是否在 afterNative_childNames 中重复
       /*state.containers[param.key].real_childNames.forEach((item, index) => {
         if(item.child_name === ) {
-        
+
         }
       });*/
       let arr = [];
@@ -565,7 +574,7 @@ export default {
           for(let j = 0; j < state.containers[param.key].afterNative_childNames.length; j++) {
             console.log(state.containers[param.key].real_childNames[i].child_name, state.containers[param.key].afterNative_childNames[j].child_name);
             if(state.containers[param.key].real_childNames[i].child_name !== state.containers[param.key].afterNative_childNames[j].child_name) {
-        
+
               arr.push(state.containers[param.key].afterNative_childNames[j]);
             }
           }
