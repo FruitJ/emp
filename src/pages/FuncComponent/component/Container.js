@@ -35,13 +35,23 @@ const Container = props => {
       id = proxy_obj.parentNames[proxy_obj.parentNames.length - 1].parent_id;
     }
 
+    console.log('[ 分割线 ]');
+    console.log(proxy_obj);
+
     console.log('idid: ' + id);
 
     console.log('id .......');
     console.log(typeof id);
     console.log(id);
 
-    props.onAddChildNodeClick(props.dataKey, id);
+    let prop = '';
+    proxy_obj.parentNames.forEach((item, index) => {
+      if (item.parent_id === id) {
+        prop = item.prop;
+      }
+    });
+
+    props.onAddChildNodeClick(props.dataKey, id, prop);
   };
 
   const handleChildInputClick = () => {
@@ -87,7 +97,7 @@ const Container = props => {
   let proxy_obj = props.board.containers[props.dataKey];
   return (
     <Row>
-      <Col span={12} style={{ position: 'relative', zIndex: '99999' }}>
+      <Col span={12} style={{ position: 'relative' }}>
         <div
           style={{ marginTop: '10px', padding: '7px 10px 7px 10px', backgroundColor: '#F8F8F8' }}
         >
@@ -231,7 +241,7 @@ const Container = props => {
                   </div>
                 </div>
 
-                <div style={{ position: 'relative', zIndex: '1', top: '-93px', left: '0px' }}>
+                <div style={{ position: 'relative', zIndex: '100000', top: '-93px', left: '0px' }}>
                   <HoverInputBoard
                     list={proxy_obj.childNames}
                     dataKey={props.dataKey}

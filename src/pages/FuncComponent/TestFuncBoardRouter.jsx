@@ -152,7 +152,7 @@ class TestFuncBoardRouter extends Component {
     });
   };
 
-  handleAddChildNodeClick = (dataKey, id) => {
+  handleAddChildNodeClick = (dataKey, id, prop) => {
     // const proxy_obj = this.props.funcBoard.containers[dataKey];
 
     // let id = Number(proxy_obj.parentInputId);
@@ -162,7 +162,7 @@ class TestFuncBoardRouter extends Component {
 
     console.log('父节点索引 ...');
     console.log(id, this.props.funcBoard.containers[dataKey].parentInputVal);
-
+    console.log(this.props.funcBoard.backUp_childNames);
     // 加载对应子节点数据
     dispatch({
       type: 'funcBoard/loadChildNodeData',
@@ -170,6 +170,7 @@ class TestFuncBoardRouter extends Component {
         parent_name: this.props.funcBoard.containers[dataKey].parentInputVal,
         parent_id: id,
         key: dataKey,
+        prop,
       },
     });
 
@@ -222,7 +223,7 @@ class TestFuncBoardRouter extends Component {
     });*/
   };
 
-  handlePutValToChildInputClick = (child_name, child_id, dataKey, parent_id) => {
+  handlePutValToChildInputClick = (child_name, child_id, dataKey, parent_id, prop) => {
     console.log('^-_^_-^');
     console.log(child_name, child_id, dataKey);
 
@@ -236,6 +237,7 @@ class TestFuncBoardRouter extends Component {
         child_id,
         key: dataKey,
         parent_id,
+        prop,
       },
     });
   };
@@ -275,6 +277,11 @@ class TestFuncBoardRouter extends Component {
       let temp_addEle = this.props.funcBoard.containers[key].afterNative_childNames.filter(
         (item, index) => Number.isNaN(Number(item.child_id)),
       );
+      let arr = this.props.funcBoard.backUp_parentNames.filter(
+        (item, index) => item.parent_name === this.props.funcBoard.containers[key].parentInputVal,
+      );
+      console.log('哇咔咔 ~ ...');
+      console.log(arr[0]);
 
       // 替换上传元素的 id
       dispatch({
@@ -282,20 +289,31 @@ class TestFuncBoardRouter extends Component {
         payload: {
           key,
           temp_addEle,
+          prop: arr[0].prop,
+          parent_id: arr[0].parent_id,
         },
       });
       // console.log("临时添加的元素");
 
       // console.log(this.props.funcBoard.containers[key].afterNative_childNames.filter((item, index) => Number.isNaN(Number(item.child_id))));
-    }
+    } /*else {
+      dispatch({
+      type: 'funcBoard/_realAddChildEle',
+      payload: {
+        key,
+      },
+    });
+    }*/
     // 将待选区域的标签移至真实区域 ( 同时清空待选区域数组 )
+
+    console.log('real_arr');
+
     dispatch({
       type: 'funcBoard/_realAddChildEle',
       payload: {
         key,
       },
     });
-
     console.log('___________ 分割线___________');
     console.log(this.props.funcBoard.containers[key].afterNative_childNames);
 
