@@ -56,13 +56,13 @@ const columns = [
       return obj;
     },
   },
-  {
+  /*{
     title: '版本',
     dataIndex: 'version',
-  },
+  },*/
 ];
 
-const data = [
+/*const data = [
   { color: '红色', size: '32 寸', version: '7.0', key: 1 },
   { color: '红色', size: '32 寸', version: '8.0', key: 2 },
   { color: '红色', size: '32 寸', version: '9.0', key: 3 },
@@ -90,6 +90,26 @@ const data = [
   { color: '紫色', size: '96 寸', version: '7.0', key: 25 },
   { color: '紫色', size: '96 寸', version: '8.0', key: 26 },
   { color: '紫色', size: '96 寸', version: '9.0', key: 27 },
+];*/
+const data = [
+  { color: '红色', size: '32 寸', key: 1 },
+  { color: '红色', size: '32 寸', key: 2 },
+  { color: '红色', size: '56 寸', key: 4 },
+  { color: '红色', size: '56 寸', key: 5 },
+  { color: '红色', size: '96 寸', key: 7 },
+  { color: '红色', size: '96 寸', key: 8 },
+  { color: '绿色', size: '32 寸', key: 11 },
+  { color: '绿色', size: '32 寸', key: 12 },
+  { color: '绿色', size: '56 寸', key: 14 },
+  { color: '绿色', size: '56 寸', key: 15 },
+  { color: '绿色', size: '96 寸', key: 16 },
+  { color: '绿色', size: '96 寸', key: 18 },
+  { color: '紫色', size: '32 寸', key: 19 },
+  { color: '紫色', size: '32 寸', key: 21 },
+  { color: '紫色', size: '56 寸', key: 22 },
+  { color: '紫色', size: '56 寸', key: 24 },
+  { color: '紫色', size: '96 寸', key: 25 },
+  { color: '紫色', size: '96 寸', key: 27 },
 ];
 
 let count = 100;

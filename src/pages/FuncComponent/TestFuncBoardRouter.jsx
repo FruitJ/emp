@@ -27,8 +27,6 @@ class TestFuncBoardRouter extends Component {
     dispatch({
       type: 'funcBoard/_addContainer',
     });
-    console.log(this.props.funcBoard.count_addContainer);
-    console.log(this.props.funcBoard.containers);
   };
 
   // 获取父节点数据的回调函数
@@ -70,7 +68,6 @@ class TestFuncBoardRouter extends Component {
    * @description 将当前选中的值填充进模拟表单中，同时请求其父节点下面的数据
    */
   handlePutValToParentInputClick = (parent_name, parent_id, dataKey) => {
-    alert(parent_name + '~~~');
     dispatch({
       type: 'funcBoard/_putValToParentInput',
       payload: {
@@ -81,15 +78,10 @@ class TestFuncBoardRouter extends Component {
     });
 
     // 判断 parentNames 中的第一个元素是否是临时添加的
-    console.log('fengexian');
-    console.log(this.props.funcBoard.containers[dataKey].parentNames);
 
     const { parentNames } = this.props.funcBoard.containers[dataKey];
 
     if (parentNames[0].temp !== undefined && Number.isNaN(Number(parentNames[0].parent_id))) {
-      alert('需要处理');
-      console.log('()()()--');
-      console.log(parentNames[0].parent_name);
       // 发送当前元素值
       dispatch({
         type: 'funcBoard/getNewParentNamesEle',
@@ -99,22 +91,6 @@ class TestFuncBoardRouter extends Component {
         },
       });
     }
-
-    console.log('-- -- 分割线 -- --');
-    console.log(this.props.funcBoard.containers[dataKey].isSureParentNamesEle);
-    console.log(parentNames);
-
-    /*console.log(")() 分割线 ()(");
-    console.log(this.props.funcBoard.isCouldReqChildrenData);
-    const { isCouldReqChildrenData } = this.props.funcBoard;
-    if(isCouldReqChildrenData) { // 请求子节点数据
-      /!*dispatch({
-        type: "funcBoard/",
-        payload: ,
-      });*!/
-    }else {
-      console.warn("已经添加过该规格并且已经请求过数据了!");
-    }*/
   };
 
   // 检测中文输入
@@ -153,16 +129,6 @@ class TestFuncBoardRouter extends Component {
   };
 
   handleAddChildNodeClick = (dataKey, id, prop) => {
-    // const proxy_obj = this.props.funcBoard.containers[dataKey];
-
-    // let id = Number(proxy_obj.parentInputId);
-    // if (Number.isNaN(id)) {
-    //     //   id = proxy_obj.parentNames[proxy_obj.parentNames.length - 1].parent_id;
-    //     // }
-
-    console.log('父节点索引 ...');
-    console.log(id, this.props.funcBoard.containers[dataKey].parentInputVal);
-    console.log(this.props.funcBoard.backUp_childNames);
     // 加载对应子节点数据
     dispatch({
       type: 'funcBoard/loadChildNodeData',
@@ -174,15 +140,7 @@ class TestFuncBoardRouter extends Component {
       },
     });
 
-    console.log('__ + 分割线 + __');
-    console.log(this.props.funcBoard.containers[dataKey].parentInputId);
-
     const { parentNames } = this.props.funcBoard.containers[dataKey];
-
-    console.log(
-      parentNames[parentNames.length - 1].parent_id,
-      parentNames[parentNames.length - 1].parent_name,
-    );
   };
 
   /*  handleChildInputClick = (key) => {
@@ -215,20 +173,9 @@ class TestFuncBoardRouter extends Component {
         key,
       },
     });
-
-    // 更新子节点的悬浮选值面板的样式
-    /*dispatch({
-      type: "funcBoard/_changeChildHoverBoardStyle",
-      payload: ,
-    });*/
   };
 
   handlePutValToChildInputClick = (child_name, child_id, dataKey, parent_id, prop) => {
-    console.log('^-_^_-^');
-    console.log(child_name, child_id, dataKey);
-
-    console.log(document.querySelectorAll('.child-input'));
-
     // 将选中的子节点数据填充进容器
     dispatch({
       type: 'funcBoard/_tempSaveSelectedChildNodeData',
@@ -271,7 +218,6 @@ class TestFuncBoardRouter extends Component {
       },
     });
     if (this.props.funcBoard.containers[key].isHaveTempCreatedEle) {
-      alert('有临时生成的元素');
       // 有，则先将该元素提交给后台并由后台返回一个已经替换了 id 的元素
 
       let temp_addEle = this.props.funcBoard.containers[key].afterNative_childNames.filter(
@@ -280,8 +226,6 @@ class TestFuncBoardRouter extends Component {
       let arr = this.props.funcBoard.backUp_parentNames.filter(
         (item, index) => item.parent_name === this.props.funcBoard.containers[key].parentInputVal,
       );
-      console.log('哇咔咔 ~ ...');
-      console.log(arr[0]);
 
       // 替换上传元素的 id
       dispatch({
@@ -293,20 +237,8 @@ class TestFuncBoardRouter extends Component {
           parent_id: arr[0].parent_id,
         },
       });
-      // console.log("临时添加的元素");
-
-      // console.log(this.props.funcBoard.containers[key].afterNative_childNames.filter((item, index) => Number.isNaN(Number(item.child_id))));
-    } /*else {
-      dispatch({
-      type: 'funcBoard/_realAddChildEle',
-      payload: {
-        key,
-      },
-    });
-    }*/
+    }
     // 将待选区域的标签移至真实区域 ( 同时清空待选区域数组 )
-
-    console.log('real_arr');
 
     dispatch({
       type: 'funcBoard/_realAddChildEle',
@@ -314,10 +246,6 @@ class TestFuncBoardRouter extends Component {
         key,
       },
     });
-    console.log('___________ 分割线___________');
-    console.log(this.props.funcBoard.containers[key].afterNative_childNames);
-
-    // 删除真实区域
   };
 
   handleRemoveReal_childNames = (item, key) => {
@@ -349,7 +277,6 @@ class TestFuncBoardRouter extends Component {
             onCheckChineseInputStart={this.handleCheckChineseInputStart}
             onCheckChineseInputEnd={this.handleCheckChineseInputEnd}
             onAddChildNodeClick={this.handleAddChildNodeClick}
-            // onChildInputClick={this.handleChildInputClick}
             onSwitchChildHoverBoardStatus={this.handleSwitchChildHoverBoardStatus}
             onRemoveAfterNative_childNames={this.handleRemoveAfterNative_childNames}
             onCancelChildHoverBoard={this.handleCancelChildHoverBoard}

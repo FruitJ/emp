@@ -4,33 +4,24 @@ import { Input, Icon } from 'antd';
 import '../static/HoverInputBoard.less';
 // 悬浮输入面板组件
 const HoverInputBoard = props => {
-  console.log(props.board);
   useEffect(() => {
-    console.log(props.list);
     // 获取需要展示的数据
   }, []);
 
   //
   const handlePutValToParentInputClick = (name, id, parent_id, prop) => {
-    // alert(`parent_id: ${parent_name}`);
-    alert('parent_id ... ' + parent_id);
-    alert(`prop: ${prop}`);
-
     props.onPutValToParentInputClick(name, id, props.dataKey, parent_id, prop);
   };
 
   const handleCheckChineseInputStart = () => {
-    console.log('中文输入开始 ...');
     props.onCheckChineseInputStart();
   };
 
   const handleCheckChineseInputEnd = () => {
-    console.log('中文输入结束 ...');
     props.onCheckChineseInputEnd();
   };
 
   const handleCheckInputNow = ev => {
-    console.log('元素正在输入中 ...');
     props.onCheckInputNow(ev.target.value, props.dataKey);
   };
 
@@ -59,12 +50,8 @@ const HoverInputBoard = props => {
           {props.list !== undefined
             ? props.list.map((item, index) => (
                 <li key={item.id}>
-                  {console.log('__( * 分割线 * )__')}
-                  {console.log(item.id)}
                   <div
                     onClick={() => {
-                      console.log('item ... ||| ');
-                      console.log(item);
                       handlePutValToParentInputClick(
                         item.child_name === undefined ? item.parent_name : item.child_name,
                         item.id,
@@ -74,8 +61,6 @@ const HoverInputBoard = props => {
                       );
                     }}
                   >
-                    {console.log('哎呦')}
-                    {console.log(item)}
                     {item.child_name === undefined ? item.parent_name : item.child_name}
                   </div>
                 </li>

@@ -9,21 +9,16 @@ let id = 0;
 let proxy_obj;
 // 容器组件
 const Container = props => {
-  useEffect(() => {
-    console.log(`props dataKey: ${props.dataKey}`);
-  }, []);
+  useEffect(() => {}, []);
 
   // 获取父级 input 框中数据的回调函数
   const handleParentInputClick = () => {
-    console.log(`click: ${props.dataKey}`);
-
     // 请求父节点数据
     props.onParentInputClick(props.dataKey);
   };
 
   // 移除 container 的回调函数
   const handleRemoveContainerClick = () => {
-    alert(`remove: ${props.dataKey}`);
     props.onRemoveContainerClick(props.dataKey);
   };
 
@@ -34,15 +29,6 @@ const Container = props => {
     if (Number.isNaN(id)) {
       id = proxy_obj.parentNames[proxy_obj.parentNames.length - 1].parent_id;
     }
-
-    console.log('[ 分割线 ]');
-    console.log(proxy_obj);
-
-    console.log('idid: ' + id);
-
-    console.log('id .......');
-    console.log(typeof id);
-    console.log(id);
 
     let prop = '';
     proxy_obj.parentNames.forEach((item, index) => {
@@ -68,9 +54,6 @@ const Container = props => {
     // 阻止事件传播
     ev.stopPropagation();
 
-    console.log('删除选中的项 ...');
-    console.log(item);
-
     // 删除待选子节点数组中的选中的元素
     props.onRemoveAfterNative_childNames(item, props.dataKey);
   };
@@ -86,10 +69,6 @@ const Container = props => {
   const handleRemoveReal_childNames = (ev, item) => {
     // 删除元素
     ev.stopPropagation();
-    console.log('((((***********(((((((((');
-    console.log(item);
-    console.log(props.board.containers[props.dataKey].afterNative_childNames);
-    console.log(props.board.containers[props.dataKey].real_childNames);
 
     props.onRemoveReal_childNames(item, props.dataKey);
   };

@@ -141,8 +141,8 @@ module.exports = {
     console.log('/api/getNewChildNamesEleService');
     console.log(req.body);
 
-    let { temp_addEle, prop } = req.body;
-    temp_addEle = temp_addEle.map((item, index) => {
+    let { newElements, prop } = req.body;
+    newElements = newElements.map((item, index) => {
       num += 1;
 
       return {
@@ -155,8 +155,8 @@ module.exports = {
     });
 
     console.log('呵呵');
-    console.log(temp_addEle);
+    console.log(newElements);
     // console.log(Array.from(req.body));
-    res.status(200).json(temp_addEle);
+    res.status(200).json(newElements);
   },
 };

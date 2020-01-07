@@ -33,6 +33,8 @@ export default {
 
       // 格式化并保存数据
       let res = formatData(state.dataSource);
+      console.log('干掉 bug');
+      console.log(res);
       state.data = res[0];
       state.columns = res[1];
 
@@ -144,10 +146,11 @@ function formatData(data) {
       if (data.length === 2) {
         if (data[1].children.length > 1) {
           let arr = [];
-          for (let j = 0; j < data[1].children.length; j++) {
+          for (let j = 0; j < data[0].children.length; j++) {
             arr.push(j * data[data.length - 1].children.length);
           }
           // alert(777888999);
+
           obj.render = (value, row, index) => {
             const obj = {
               children: value,
@@ -165,13 +168,16 @@ function formatData(data) {
           };
         }
       } else if (data.length === 3) {
+        alert('a');
         if (data[2].children.length > 1) {
           let arr = [];
-          for (let j = 0; j < data[2].children.length; j++) {
+          for (let j = 0; j < data[0].children.length; j++) {
             arr.push(
               j * data[data.length - 1].children.length * data[data.length - 2].children.length,
             );
           }
+          console.log('^* 分割线 *^');
+          console.log(arr);
           // alert(777888999);
           obj.render = (value, row, index) => {
             const obj = {
@@ -193,11 +199,15 @@ function formatData(data) {
       }
     } else if (i === 1) {
       // 为第二个元素设置 render
-
+      alert('b');
       if (data.length === 3) {
         if (data[2].children.length > 1) {
           let arr = [];
-          for (let j = 0; j < data[2].children.length * data[1].children.length; j++) {
+
+          console.log('-------------)(-------------');
+          console.log(data[0].children.length * data[1].children.length);
+
+          for (let j = 0; j < data[0].children.length * data[1].children.length; j++) {
             arr.push(j * data[data.length - 1].children.length);
           }
           // alert(777888999);
