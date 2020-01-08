@@ -49,7 +49,15 @@ const HoverInputBoard = props => {
         <ul>
           {props.list !== undefined
             ? props.list.map((item, index) => (
-                <li key={item.id}>
+                <li
+                  key={
+                    item.id === undefined
+                      ? item.parent_id === undefined
+                        ? item.child_id
+                        : item.parent_id
+                      : item.id
+                  }
+                >
                   <div
                     onClick={() => {
                       handlePutValToParentInputClick(

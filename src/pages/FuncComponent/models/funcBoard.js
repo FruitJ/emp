@@ -20,7 +20,7 @@ const config_common_properties = {
 
 // React Parent Input 输入时的中间临时变量
 let replace_str = '';
-
+let flag = 1000;
 // 组件的 modal
 export default {
   namespace: 'funcBoard',
@@ -44,6 +44,11 @@ export default {
       // 加载数据
       let res = yield call(loadParentNodeDataService);
 
+      res.forEach((item, index) => {
+        item.id = Number(item.parent_id);
+        item.prop = item.parent_id;
+      });
+
       yield put({
         type: '_saveParentNodeData', // 存储父节点数据
         payload: {
@@ -55,7 +60,9 @@ export default {
     // 添加新父节点数据
     *getNewParentNamesEle({ payload: param }, { call, put }) {
       let res = yield call(getNewParentNamesEleService, param);
-
+      res.id = res.parent_id;
+      console.log('嘻嘻哈哈嘻嘻哈哈');
+      console.log(res);
       yield put({
         type: '_updateParentNamesFirstEle',
         payload: {
@@ -63,15 +70,29 @@ export default {
           res,
         },
       });
+
+      yield put({
+        type: '_putValToParentInput',
+        payload: {
+          parent_name: param.parentName,
+          parent_id: param.parent_id,
+          key: param.key,
+        },
+      });
     },
     // 加载子节点数据
     *loadChildNodeData({ payload: param }, { call, put }) {
-      let res = yield call(loadChildNodeDataService, {
+      let obj = {
         parent_name: param.parent_name,
         parent_id: param.parent_id,
         prop: param.prop,
-      });
+      };
+      let res = yield call(loadChildNodeDataService, obj);
 
+      res.forEach((item, index) => {
+        item.prop = obj.prop;
+        item.id = Number(item.child_id);
+      });
       yield put({
         type: '_saveChildNodeData',
         payload: {
@@ -91,6 +112,11 @@ export default {
           prop: param.prop,
           parent_id: param.parent_id,
         })),
+      });
+      console.log(res);
+      res.forEach((item, index) => {
+        item.prop = item.parent_id;
+        item.id = item.child_id;
       });
 
       // 替换集合元素
@@ -168,7 +194,7 @@ export default {
     _saveParentNodeData(state, { payload: param }) {
       // 保存父节点数据
       // 动态向对应数据项中填充数据 ( key )
-
+      replace_str = '';
       state.transfer_parentNames = param.res; // 中转
       state.backUp_parentNames = JSON.parse(JSON.stringify(param.res)); // 备份
       state.containers[param.key].parentNames = state.transfer_parentNames; // 获取父节点数据
@@ -264,13 +290,23 @@ export default {
           state.containers[param.key].real_childNames = [];
 
           for (let i = 0; i < state.board_data.length; i++) {
+            let obj = null;
             if (state.board_data[i].name === parentInputVal) {
-              let obj = state.backUp_parentNames.filter(
-                (item, index) => item.parent_id === state.containers[param.key].parentInputId,
-              )[0];
+              obj = state.backUp_parentNames.filter((item, index) => {
+                console.log('____+______');
+                console.log(item.parent_id, state.containers[param.key].parentInputId);
+                return item.parent_id === state.containers[param.key].parentInputId;
+              })[0];
+
               state.board_data[i].name = obj.parent_name;
               state.board_data[i].id = obj.parent_id;
               state.board_data[i].children = [];
+
+              // 格式化表格数据
+              let res = formatData(state.board_data);
+              // 配置显示表格数据需要的数据源
+              state.data = res[0];
+              state.columns = res[1];
             }
           }
         }
@@ -511,21 +547,85 @@ export default {
         for (let i = 0; i < state.board_data.length; i++) {
           arr.push(state.board_data[i].id);
         }
-        // 判断元数组中是否有 id 相同的元素
+        // 判断原数组中是否有 id 相同的元素
         if (tag) {
+          alert('+');
           state.board_data.splice(arr.indexOf(obj.id), 1, obj);
         } else {
-          state.board_data.push(obj);
+          alert('-');
+
+          /*
+          *
+          
+            let temp = state.board_data.filter((item, index) => item.temp);
+	      let arr = state.board_data.filter((item, index) => !item.temp);
+          state.board_data.push([...arr, ...temp]);
+         
+          */
+
+          if (state.board_data.length === 0) {
+            state.board_data.push(obj);
+          } else {
+            state.board_data.push(obj);
+            console.log('&&&&&&&&&&&&&');
+
+            let temp = state.board_data.filter((item, index) => item.temp !== undefined);
+            let arr = state.board_data.filter((item, index) => item.temp === undefined);
+            console.log(state.board_data);
+            console.log(state.board_data.length);
+            state.board_data = [...arr, ...temp];
+            // state.board_data.push();
+
+            console.log(temp);
+            console.log(arr);
+          }
+
+          /*console.log(";;;;;;;;;");
+	        console.log(temp);
+	        console.log(obj);
+	        console.log(state.board_data);*/
         }
+
+        console.log('嘻嘻哈哈嘿嘿');
+        console.log(state.board_data);
 
         state.board_data = state.board_data.filter((item, index) =>
           item.children.every((obj, num) => {
             return !Number.isNaN(Number(obj.id));
           }),
         );
+
+        console.log('^^&&^^||^^&&^^');
+        console.log(state.board_data);
+
         // 根据规格组件选中的规格值动态生成表格
         // 格式化表格数据
+
+        console.log('] 分割线 [');
+        console.log(state.board_data);
+        console.log(state.containers[param.key].parentNames);
+        console.log(state.backUp_parentNames);
+
+        if (!state.board_data.some((item, index) => item.name === '价格')) {
+          flag += 1;
+
+          let temp_obj = {
+            name: '价格',
+            id: flag,
+            temp: true,
+            children: [
+              {
+                prop: flag.toString(),
+                name: '价格',
+                id: flag + 10,
+              },
+            ],
+          };
+          state.board_data.push(temp_obj);
+        }
+
         let res = formatData(state.board_data);
+        console.log(res);
 
         // 配置显示表格数据需要的数据源
         state.data = res[0];
@@ -721,12 +821,16 @@ function formatData(data) {
     arr.push(data[i].children);
   }
 
+  console.warn('}{}{}{}{}{');
+  console.log(arr);
   let tableData = []; // 表格数据
   let count = 0; // 每行表格必须的 key 值
 
   // 格式化表格数据
   switch (arr.length) {
     case 1: // 仅有一种规格
+      alert('A');
+
       arr[0].forEach((item, index) => {
         // 遍历第一个规格值的集合 -> 创建数据并添加
         count += 1;
@@ -738,6 +842,8 @@ function formatData(data) {
       break;
 
     case 2: // 有两种规格
+      alert('B');
+
       arr[0].forEach((item, index) => {
         // 遍历第一个规格值的集合 -> 创建数据并添加
         if (arr[1].length !== 0) {
@@ -763,6 +869,8 @@ function formatData(data) {
 
       break;
     case 3: // 有三种规格
+      alert('C');
+
       if (arr[0].length !== 0) {
         // 第一个规格值集合有元素
         arr[0].forEach((item, index) => {
@@ -875,6 +983,8 @@ function formatData(data) {
   // 格式化 column 数据
   let columns = [];
 
+  console.log('columns');
+  console.log(data);
   let len = data.length;
   for (let i = 0; i < len; i++) {
     if (data[i] !== undefined) {
@@ -884,14 +994,18 @@ function formatData(data) {
           title: data[i].name,
           dataIndex: data[i].children[0].prop,
         };
-
+        console.log('ooooooooooooooooooooooooo');
+        console.log(data);
         if (i === 0) {
+          alert('start ...');
           // 为第一个元素设置 render
-          if (data.length === 2) {
+          let len = data.length - 1;
+          if (len === 2) {
             if (data[1].children.length > 1) {
               let arr = [];
+              alert('start .../\\/');
               for (let j = 0; j < data[0].children.length; j++) {
-                arr.push(j * data[data.length - 1].children.length);
+                arr.push(j * data[data.length - 2].children.length);
               }
 
               obj.render = (value, row, index) => {
@@ -900,7 +1014,7 @@ function formatData(data) {
                   props: {},
                 };
                 if (arr.indexOf(index) !== -1) {
-                  obj.props.rowSpan = data[data.length - 1].children.length;
+                  obj.props.rowSpan = data[data.length - 2].children.length;
                 } else {
                   obj.props.rowSpan = 0;
                 }
@@ -908,9 +1022,13 @@ function formatData(data) {
                 return obj;
               };
             }
-          } else if (data.length === 3) {
+          } else if (len === 3) {
+            alert('加油');
+            console.warn('|||');
+            console.log(data);
             if (data[2].children.length > 1) {
               let arr = [];
+
               for (let j = 0; j < data[0].children.length; j++) {
                 arr.push(
                   j * data[data.length - 1].children.length * data[data.length - 2].children.length,

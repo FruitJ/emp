@@ -37,14 +37,14 @@ export default {
             name: '56 寸',
             id: 7,
           },
-          /*{
+          {
             prop: 'size',
             name: '96 寸',
             id: 8,
-          },*/
+          },
         ],
       },
-      /*{
+      {
         name: '版本',
         id: 9,
         children: [
@@ -64,7 +64,18 @@ export default {
             id: 12,
           },
         ],
-      },*/
+      },
+      {
+        name: '价格',
+        id: 9,
+        children: [
+          {
+            prop: 'price',
+            name: '7.0',
+            id: 10,
+          },
+        ],
+      },
     ];
 
     res.status(200).json(table);

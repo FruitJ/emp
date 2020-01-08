@@ -56,10 +56,14 @@ const columns = [
       return obj;
     },
   },
-  /*{
+  {
     title: '版本',
     dataIndex: 'version',
-  },*/
+  },
+  {
+    title: '价格',
+    dataIndex: 'price',
+  },
 ];
 
 /*const data = [

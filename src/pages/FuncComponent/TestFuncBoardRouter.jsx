@@ -13,6 +13,7 @@ import { Table } from 'antd';
 
 // 初始化 dispatch ( 简化写法 )
 let dispatch = null;
+let id = 0;
 // 测试组件
 class TestFuncBoardRouter extends Component {
   constructor(props) {
@@ -68,28 +69,36 @@ class TestFuncBoardRouter extends Component {
    * @description 将当前选中的值填充进模拟表单中，同时请求其父节点下面的数据
    */
   handlePutValToParentInputClick = (parent_name, parent_id, dataKey) => {
-    dispatch({
-      type: 'funcBoard/_putValToParentInput',
-      payload: {
-        parent_name,
-        parent_id,
-        key: dataKey,
-      },
-    });
-
     // 判断 parentNames 中的第一个元素是否是临时添加的
+
+    alert(parent_id);
 
     const { parentNames } = this.props.funcBoard.containers[dataKey];
 
     if (parentNames[0].temp !== undefined && Number.isNaN(Number(parentNames[0].parent_id))) {
+      alert(`: ${id}`);
       // 发送当前元素值
       dispatch({
         type: 'funcBoard/getNewParentNamesEle',
         payload: {
           parent_name: parentNames[0].parent_name,
           key: dataKey,
+          parentName: parent_name,
+          parent_id: id,
         },
       });
+      id = 0;
+    } else {
+      dispatch({
+        type: 'funcBoard/_putValToParentInput',
+        payload: {
+          parent_name,
+          parent_id,
+          key: dataKey,
+        },
+      });
+
+      id = parent_id;
     }
   };
 

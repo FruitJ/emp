@@ -232,11 +232,6 @@ const Container = props => {
                     onCheckChineseInputStart={props.onCheckChineseInputStart}
                     onCheckChineseInputEnd={props.onCheckChineseInputEnd}
                   />
-                  {/*
-                <HoverInputBoard list={proxy_obj.parentNames[(id - 1) >= 0 ? id - 1 : 0].childNames}
-                                 boardStatus={proxy_obj.hoverChildInputBoard_status}
-                />
-*/}
                 </div>
               </div>
             </>
