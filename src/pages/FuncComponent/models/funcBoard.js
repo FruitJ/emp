@@ -1,6 +1,8 @@
+import React from 'react';
 // 官方包
 import { message } from 'antd';
 import UUID from 'uuidjs';
+import { Input, Icon, Upload, Button } from 'antd';
 
 // 自定义包
 import {
@@ -609,19 +611,88 @@ export default {
         if (!state.board_data.some((item, index) => item.name === '价格')) {
           flag += 1;
 
-          let temp_obj = {
+          let arr = [];
+          /*let temp_obj = {
             name: '价格',
             id: flag,
             temp: true,
-            children: [
-              {
-                prop: flag.toString(),
-                name: '价格',
-                id: flag + 10,
-              },
-            ],
-          };
-          state.board_data.push(temp_obj);
+          };*/
+          arr.push({
+            name: '价格',
+            id: flag,
+            temp: "price",
+          });
+          flag += 1;
+          arr[0].children = [
+            {
+              prop: flag.toString(),
+              name: (<Input prefix="￥" suffix="RMB" style={{ width: "40%" }} />),
+              id: flag,
+            },
+          ];
+          
+          state.board_data.push(...arr);
+        }
+  
+        if (!state.board_data.some((item, index) => item.name === '库存')){
+          flag += 1;
+  
+          let arr = [];
+          /*let temp_obj = {
+            name: '价格',
+            id: flag,
+            temp: true,
+          };*/
+          arr.push({
+            name: '库存',
+            id: flag,
+            temp: "repertory",
+          });
+          flag += 1;
+          arr[0].children = [
+            {
+              prop: flag.toString(),
+              name: (<Input prefix={<Icon type="inbox" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                            style={{ width: "40%" }}
+              />),
+              id: flag,
+            },
+          ];
+  
+  
+          state.board_data.push(...arr);
+        }
+  
+        if (!state.board_data.some((item, index) => item.name === '图片')){
+          flag += 1;
+    
+          let arr = [];
+          /*let temp_obj = {
+            name: '价格',
+            id: flag,
+            temp: true,
+          };*/
+          arr.push({
+            name: '图片',
+            id: flag,
+            temp: "picture",
+          });
+          flag += 1;
+          arr[0].children = [
+            {
+              prop: flag.toString(),
+              name: (<Upload>
+                    <Button>
+                      <Icon type="upload"/> Click to Upload
+                    </Button>
+                  </Upload>
+              ),
+              id: flag,
+            },
+          ];
+    
+    
+          state.board_data.push(...arr);
         }
 
         let res = formatData(state.board_data);
@@ -827,7 +898,7 @@ function formatData(data) {
   let count = 0; // 每行表格必须的 key 值
 
   // 格式化表格数据
-  switch (arr.length) {
+/*  switch (arr.length - 3) {
     case 1: // 仅有一种规格
       alert('A');
 
@@ -904,11 +975,11 @@ function formatData(data) {
             });
           } else {
             // 第二个规格值集合无元素
-            /*count += 1;
+            /!*count += 1;
 			tableData.push({
 			  [item.prop]: item.name,
 			  key: count,
-			});*/
+			});*!/
             if (arr[2].length !== 0) {
               // 第三个规格值集合有元素
               arr[2].forEach((object, id) => {
@@ -978,8 +1049,211 @@ function formatData(data) {
       }
 
       break;
-  }
+  }*/
+  console.log("%&%&%&%&%&%");
+  console.log(arr[0]);
+  
+  
 
+  // ...asdas
+/*  for(let i = 0; i < arr.length - 3; i++) {
+    
+    
+    console.log("[]{}【】");
+    console.log(arr);
+    // if(arr.length - 3 <= 3) {
+      // alert("1");
+      console.log(arr[i]);
+      for(let j = 0; j < arr[i].length; j++) {
+       /!* tableData.push({
+          key: count,
+          [arr[i][j].prop]: arr[i][j].name
+        });*!/
+        count += 1;
+        tableData.push({
+          key: count,
+          [arr[i][j].prop]: arr[i][j].name
+        });
+        console.log("sudo");
+        console.log([arr[i][j].prop], arr[i][j].name);
+      }
+    /!*}else {
+    
+    }*!/
+   /!* tableData.push({
+      key: count
+    });*!/
+    /!*for(let j = 0; j < arr[i].length; j++) {
+      count += 1;
+      tableData[i][arr[i][j].prop] = arr[i][j].name;
+      tableData[i].key = count;
+    }*!/
+  }*/
+  
+  // yes
+/*  for(let j = 0; j < arr[0].length; j++) {
+    /!* tableData.push({
+	   key: count,
+	   [arr[i][j].prop]: arr[i][j].name
+	 });*!/
+    count += 1;
+    tableData.push({
+      key: count,
+      [arr[0][j].prop]: arr[0][j].name
+    });
+  }
+  console.log("|||");
+  console.log(arr.length - 3, arr.length);
+  let surplus = arr.slice(1, arr.length);
+  console.log("surplus ...");
+  console.log(tableData);
+  console.log(surplus);
+  
+  tableData.forEach((item, index) => {
+    for(let i = 0; i < surplus.length; i++) {
+      for(let j = 0; j < surplus[i].length; j++) {
+        item[surplus[i][j].prop] = surplus[i][j].name
+      }
+      
+    }
+  });*/
+  
+  let surplus = arr.slice(0, arr.length - 3);
+
+  console.log("asdasd");
+  console.log(surplus[0]);
+  console.log(arr[0]);
+  if (arr[0].length !== 0) {
+      // 第一个规格值集合有元素
+      arr[0].forEach((item, index) => {
+        // 遍历第一个规格值的集合 -> 创建数据并添加
+      
+        if (arr[1].length !== 0) {
+          // 第二个规格值集合有元素
+          arr[1].forEach((ele, num) => {
+            // 遍历第二个规格值的集合 -> 创建数据并添加
+            if (arr[2].length !== 0) {
+              // 第三个规格值集合有元素
+              arr[2].forEach((object, id) => {
+                // 遍历第三个规格值的集合 -> 创建数据并添加
+                count += 1;
+                tableData.push({
+                  [item.prop]: item.name,
+                  [ele.prop]: ele.name,
+                  [object.prop]: object.name,
+                  [arr[arr.length - 1][0].prop]: arr[arr.length - 1][0].name,
+                  [arr[arr.length - 2][0].prop]: arr[arr.length - 2][0].name,
+                  [arr[arr.length - 3][0].prop]: arr[arr.length - 3][0].name,
+                  key: count,
+                });
+              });
+            } else {
+              // 第三个规格值集合无元素 ( 直接添加 第一种/第二种 规格模型的表格数据 )
+              count += 1;
+              tableData.push({
+                [item.prop]: item.name,
+                [ele.prop]: ele.name,
+                [arr[arr.length - 1][0].prop]: arr[arr.length - 1][0].name,
+                [arr[arr.length - 2][0].prop]: arr[arr.length - 2][0].name,
+                [arr[arr.length - 3][0].prop]: arr[arr.length - 3][0].name,
+                key: count,
+              });
+            }
+          });
+        } else {
+          // 第二个规格值集合无元素
+          /*count += 1;
+		  tableData.push({
+			[item.prop]: item.name,
+			key: count,
+		  });*/
+          if (arr[2].length !== 0) {
+            // 第三个规格值集合有元素
+            arr[2].forEach((object, id) => {
+              // 遍历第三个规格值的集合 -> 创建数据并添加
+              count += 1;
+              tableData.push({
+                [item.prop]: item.name,
+                [object.prop]: object.name,
+                [arr[arr.length - 1][0].prop]: arr[arr.length - 1][0].name,
+                [arr[arr.length - 2][0].prop]: arr[arr.length - 2][0].name,
+                [arr[arr.length - 3][0].prop]: arr[arr.length - 3][0].name,
+                key: count,
+              });
+            });
+          } else {
+            // 第三个规格值集合无元素 ( 直接添加 第一种/第二种 规格模型的表格数据 )
+            count += 1;
+            tableData.push({
+              [item.prop]: item.name,
+              [arr[arr.length - 1][0].prop]: arr[arr.length - 1][0].name,
+              [arr[arr.length - 2][0].prop]: arr[arr.length - 2][0].name,
+              [arr[arr.length - 3][0].prop]: arr[arr.length - 3][0].name,
+              key: count,
+            });
+          }
+        }
+      });
+    } else {
+      // 第一个规格值集合无元素
+      if (arr[1].length !== 0) {
+        // 第二个规格值集合有元素
+        arr[1].forEach((ele, num) => {
+          // 遍历第二个规格值的集合 -> 创建数据并添加
+          if (arr[2].length !== 0) {
+            // 第三个规格值集合有元素
+            arr[2].forEach((object, id) => {
+              // 遍历第三个规格值的集合 -> 创建数据并添加
+              count += 1;
+              tableData.push({
+                [ele.prop]: ele.name,
+                [object.prop]: object.name,
+                [arr[arr.length - 1][0].prop]: arr[arr.length - 1][0].name,
+                [arr[arr.length - 2][0].prop]: arr[arr.length - 2][0].name,
+                [arr[arr.length - 3][0].prop]: arr[arr.length - 3][0].name,
+                key: count,
+              });
+            });
+          } else {
+            // 第三个规格值集合无元素
+            count += 1;
+            tableData.push({
+              [ele.prop]: ele.name,
+              [arr[arr.length - 1][0].prop]: arr[arr.length - 1][0].name,
+              [arr[arr.length - 2][0].prop]: arr[arr.length - 2][0].name,
+              [arr[arr.length - 3][0].prop]: arr[arr.length - 3][0].name,
+              key: count,
+            });
+          }
+        });
+      } else {
+        // 第二个规格值集合无元素
+        if (arr[2].length !== 0) {
+          // 第三个规格值集合有元素 ( 直接添加 第一种 规格模型的表格数据 )
+          arr[2].forEach((object, id) => {
+            count += 1;
+            tableData.push({
+              [object.prop]: object.name,
+              [arr[arr.length - 1][0].prop]: arr[arr.length - 1][0].name,
+              [arr[arr.length - 2][0].prop]: arr[arr.length - 2][0].name,
+              [arr[arr.length - 3][0].prop]: arr[arr.length - 3][0].name,
+              key: count,
+            });
+          });
+        } else {
+          // 第三个规格值集合无元素
+          count += 1;
+          tableData.push({
+            key: count,
+          });
+        }
+      }
+    }
+  
+  console.log("&&&********&&&&&&&&&&&&&&&&&***********");
+  console.log(tableData);
+  
+  
   // 格式化 column 数据
   let columns = [];
 
@@ -990,22 +1264,62 @@ function formatData(data) {
     if (data[i] !== undefined) {
       if (data[i].children.length === 0) {
       } else {
-        let obj = {
-          title: data[i].name,
-          dataIndex: data[i].children[0].prop,
-        };
+        alert("Go");
+        console.log("???????????");
+        console.log(data[i]);
+        let obj = null;
+        /*if(data[i].temp !== undefined) {
+          obj = {
+            title: data[i].name,
+            dataIndex: data[i].children[0].prop,
+            render: (text, record) => {
+              
+              console.log(")))))))))))))))))))))))))))))))))))");
+              console.log(text);
+              console.log(record);
+  
+              return data[i].temp === "price" ? (
+                  <Input prefix="￥" suffix="RMB" style={{ width: "40%" }} />
+              ) : data[i].temp === "repertory" ? (
+                  <Input prefix={<Icon type="inbox" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                         style={{ width: "40%" }}
+                  />
+              ) : data[i].temp === "picture" ? (
+                  <Upload>
+                    <Button>
+                      <Icon type="upload"/> Click to Upload
+                    </Button>
+                  </Upload>
+              ) : null;
+            },
+          };
+        }else {*/
+          obj = {
+            title: data[i].name,
+            dataIndex: data[i].children[0].prop,
+            render: (text, record) => {
+              console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+              console.log(text);
+              console.log(record);
+              return text;
+            }
+          };
+        // }
+        
         console.log('ooooooooooooooooooooooooo');
         console.log(data);
         if (i === 0) {
           alert('start ...');
           // 为第一个元素设置 render
-          let len = data.length - 1;
+          let len = data.length - 3;
+          
+          alert(`data length: ${ len }`);
           if (len === 2) {
             if (data[1].children.length > 1) {
               let arr = [];
               alert('start .../\\/');
               for (let j = 0; j < data[0].children.length; j++) {
-                arr.push(j * data[data.length - 2].children.length);
+                arr.push(j * data[len - 1].children.length);
               }
 
               obj.render = (value, row, index) => {
@@ -1014,7 +1328,7 @@ function formatData(data) {
                   props: {},
                 };
                 if (arr.indexOf(index) !== -1) {
-                  obj.props.rowSpan = data[data.length - 2].children.length;
+                  obj.props.rowSpan = data[len - 1].children.length;
                 } else {
                   obj.props.rowSpan = 0;
                 }
@@ -1028,10 +1342,10 @@ function formatData(data) {
             console.log(data);
             if (data[2].children.length > 1) {
               let arr = [];
-
+              alert("哈哈");
               for (let j = 0; j < data[0].children.length; j++) {
                 arr.push(
-                  j * data[data.length - 1].children.length * data[data.length - 2].children.length,
+                  j * data[data.length - (1 + 3)].children.length * data[data.length - (2 + 3)].children.length,
                 );
               }
               obj.render = (value, row, index) => {
@@ -1041,7 +1355,7 @@ function formatData(data) {
                 };
                 if (arr.indexOf(index) !== -1) {
                   obj.props.rowSpan =
-                    data[data.length - 1].children.length * data[data.length - 2].children.length;
+                    data[data.length - (1 + 3)].children.length * data[data.length - (2 + 3)].children.length;
                 } else {
                   obj.props.rowSpan = 0;
                 }
@@ -1052,12 +1366,14 @@ function formatData(data) {
           }
         } else if (i === 1) {
           // 为第二个元素设置 render
-          if (data.length === 3) {
+          
+          if (data.length - 3 === 3) {
             if (data[2].children.length > 1) {
               let arr = [];
-
+              console.warn('|-|');
+              console.log(data);
               for (let j = 0; j < data[0].children.length * data[1].children.length; j++) {
-                arr.push(j * data[data.length - 1].children.length);
+                arr.push(j * data[data.length - (1 + 3)].children.length);
               }
               obj.render = (value, row, index) => {
                 const obj = {
@@ -1066,7 +1382,7 @@ function formatData(data) {
                 };
 
                 if (arr.indexOf(index) !== -1) {
-                  obj.props.rowSpan = data[data.length - 1].children.length;
+                  obj.props.rowSpan = data[data.length - ( 1 + 3)].children.length;
                 } else {
                   obj.props.rowSpan = 0;
                 }

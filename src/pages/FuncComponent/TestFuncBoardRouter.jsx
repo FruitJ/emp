@@ -20,6 +20,7 @@ class TestFuncBoardRouter extends Component {
     super(props);
     // 简化 dispatch 写法
     dispatch = this.props.dispatch;
+    this.tableRef = React.createRef();
   }
 
   // 点击添加按钮的回调函数
@@ -266,7 +267,19 @@ class TestFuncBoardRouter extends Component {
       },
     });
   };
-
+  
+  handleTableChange = (pagination, filters, sorter, extra) => {
+    console.log("---------------------");
+    console.log(extra);
+  };
+  
+  handleClick = () => {
+    console.log(11233214165);
+    console.log(this.props.funcBoard.data);
+    console.log(this.props.funcBoard.columns);
+    console.log(this.tableRef.current.nextElementSibling.querySelectorAll("table")[0]);
+  };
+  
   render() {
     return (
       <div>
@@ -294,14 +307,18 @@ class TestFuncBoardRouter extends Component {
           />
         ))}
         {/* 添加按钮组件 */}
-        <AddBoardBtn onAddComponentClick={this.handleAddComponentClick} />
+        <AddBoardBtn ref={ this.tableRef } onAddComponentClick={this.handleAddComponentClick} />
 
         <Table
+          
           columns={this.props.funcBoard.columns}
           dataSource={this.props.funcBoard.data}
           size="middle"
           pagination={false}
+          onChange={this.handleTableChange}
+          
         />
+        <button className = "btn btn-info" onClick = { this.handleClick }>get table data</button>
       </div>
     );
   }
