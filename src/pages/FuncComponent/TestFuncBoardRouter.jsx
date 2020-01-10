@@ -254,6 +254,7 @@ class TestFuncBoardRouter extends Component {
       type: 'funcBoard/_realAddChildEle',
       payload: {
         key,
+        table: this.tableRef.current.nextElementSibling.querySelectorAll("table")[0],
       },
     });
   };
@@ -277,7 +278,16 @@ class TestFuncBoardRouter extends Component {
     console.log(11233214165);
     console.log(this.props.funcBoard.data);
     console.log(this.props.funcBoard.columns);
-    console.log(this.tableRef.current.nextElementSibling.querySelectorAll("table")[0]);
+    // console.log(this.tableRef.current.nextElementSibling.querySelectorAll("table")[0]);
+    
+    // 提交页面数据
+    dispatch({
+      type: "funcBoard/_submitCurrentData",
+      payload: {
+        table: this.tableRef.current.nextElementSibling.querySelectorAll("table")[0],
+      }
+    });
+    
   };
   
   render() {
@@ -318,7 +328,7 @@ class TestFuncBoardRouter extends Component {
           onChange={this.handleTableChange}
           
         />
-        <button className = "btn btn-info" onClick = { this.handleClick }>get table data</button>
+        <button className = "btn btn-info" onClick = { this.handleClick }>提交</button>
       </div>
     );
   }

@@ -23,6 +23,7 @@ const config_common_properties = {
 // React Parent Input 输入时的中间临时变量
 let replace_str = '';
 let flag = 1000;
+let DEFAULT_TABLE_UNIT = ["价格", "库存", "图片"];
 // 组件的 modal
 export default {
   namespace: 'funcBoard',
@@ -500,6 +501,24 @@ export default {
     },
     // 将待选区域的数据集合添加到真实展示区域
     _realAddChildEle(state, { payload: param }) {
+      
+      let tbody = param.table.querySelectorAll("tbody")[0];
+      
+      setTimeout(() => { // 使用定时器的原因是表格生成的时机比获取行为慢，导致获取失败
+        // ( 为每个最后含有 file 类型的 input 设置 data-key 属性 )
+        let trs = tbody.children;
+        let tds = [];
+        for(let i = 0; i < trs.length; i++) {
+          let len = trs[i].querySelectorAll("td").length;
+          tds.push(trs[i].querySelectorAll("td")[len - 1]);
+        }
+        // 为当前每个 td 下面的 btn 设置 data-key 属性
+        tds.forEach((item, index) => {
+          item.querySelectorAll("button")[0].dataset.rowKey = index.toString();
+        });
+      }, 0);
+  
+  
       let arr = [];
       if (state.containers[param.key].real_childNames.length === 0) {
         state.containers[param.key].real_childNames.push(
@@ -728,6 +747,124 @@ export default {
         param.key
       ].real_childNames.filter((item, index) => item.child_name !== param.item.child_name);
 
+      return { ...state };
+    },
+    '_submitCurrentData'(state, { payload: param }) {
+      const { table } = param;
+      
+      console.log(";;;;;;;;;;;;;");
+      console.log(table);
+      
+      // 获取表头
+      /*let thead = table.querySelectorAll("thead")[0];
+      let thead_ths = thead.querySelectorAll("th");
+      console.log(thead_ths);
+      let real_thead = Array.from(thead_ths).filter((item, index) => !DEFAULT_TABLE_UNIT.includes(item.innerText));
+      console.log("... real_thead ...");
+      real_thead.forEach((item, index) => {
+        console.log(item.innerText);
+      });*/
+      let tbody = table.querySelectorAll("tbody")[0];
+      console.log(tbody);
+      let trs = tbody.querySelectorAll("tr");
+      
+      let input_data = [];
+      Array.from(trs).forEach((item, index) => {
+        let tds = item.querySelectorAll("td");
+        tds = Array.from(tds).filter((item, index) => item.querySelectorAll("input").length !== 0);
+        let td = [];
+        tds.forEach((item, index) => {
+          console.log("123456789");
+          console.log(item);
+  
+          // console.log(item.querySelectorAll("button"));
+          
+          td.push(item.querySelectorAll("input")[0].value);
+        });
+        input_data.push(td);
+      });
+      
+      
+      console.log("*********");
+      console.log(input_data);
+      console.log(trs);
+  
+      let arr = [];
+      console.log("] 分割线 [");
+      console.log(state.board_data);
+      for(let i = 0; i < state.board_data.length - 3; i++) {
+        arr.push(state.board_data[i]);
+      }
+      console.log(")( )( )(");
+  
+      /*sku_list.push({
+        sku_url: "",
+        price: 0,
+        stock: 0,
+        spec_option_id_list: [],
+      });*/
+      
+      console.log(arr);
+      let sku_list = [];
+/*      if(arr.length > 1) {
+        for(let i = 0; i < arr[arr.length - 1].children.length; i++) {
+        
+        
+        }
+      }*/
+      
+      if(arr.length > 1 && arr.length <= 2) { // 两次循环
+        for(let i = 0; i < arr[arr.length - 2].children.length; i++) {
+          for(let j = 0; j < arr[arr.length - 1].children.length; j++) {
+            let temp = [];
+            temp.push(arr[arr.length - 2].children[i].id, arr[arr.length - 1].children[j].id);
+            sku_list.push(temp);
+          }
+        }
+        
+        
+      }else if(arr.length > 2 && arr.length <= 3) { // 三次循环
+  
+        for(let i = 0; i < arr[arr.length - 3].children.length; i++) {
+  
+          for(let j = 0; j < arr[arr.length - 2].children.length; j++) {
+            for(let o = 0; o < arr[arr.length - 1].children.length; o++) {
+              let temp = [];
+              temp.push(arr[arr.length - 3].children[i].id, arr[arr.length - 2].children[j].id, arr[arr.length - 1].children[o].id);
+              sku_list.push(temp);
+            }
+          }
+        }
+       
+      }else if(arr.length <= 1) { // 一次循环
+        for(let i = 0; i < arr[arr.length - 1].children.length; i++) {
+          let temp = [];
+          temp.push(arr[arr.length - 1].children[i].id);
+          sku_list.push(temp);
+        }
+      }
+  
+      // 获取当前所有表格
+      let data = [];
+      let alis = ["price", "stock", "sku_url"];
+      if(input_data.length === sku_list.length) {
+        input_data.forEach((item, index) => {
+          let obj = {};
+          item.forEach((val, num) => {
+            obj[alis[num]] = val;
+          });
+  
+          obj.spec_option_id_list = sku_list[index];
+  
+          data.push(obj);
+        });
+        
+      }
+  
+      console.log("}_ + + _{");
+      console.log(data);
+      console.log(input_data);
+      console.log(sku_list);
       return { ...state };
     },
   },

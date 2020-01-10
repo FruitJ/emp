@@ -157,6 +157,11 @@ export default {
               component: './FuncComponent/component/HoverInputBoard',
             },
             {
+              path: '/component/upload',
+              name: 'upload',
+              component: './UploadRouter',
+            },
+            {
               path: '/admin',
               name: 'admin',
               icon: 'crown',
@@ -239,6 +244,11 @@ export default {
       target: 'http://localhost:8080/management_platform/',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
+    },
+    '/api/uploadPicService': {
+      target: 'https://up-z1.qiniup.com',
+      changeOrigin: true,
+      pathRewrite: { '^/api/uploadPicService': '' },
     },
   },
 };

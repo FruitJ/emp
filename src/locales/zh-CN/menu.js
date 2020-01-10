@@ -56,4 +56,5 @@ export default {
   'menu.table': '表格',
   'menu.board': '面板',
   'menu.hoverBoard': '浮动选值面板',
+  'menu.upload': '上传组件',
 };
