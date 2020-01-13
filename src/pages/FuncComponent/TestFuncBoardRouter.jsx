@@ -6,7 +6,7 @@ import { connect } from 'dva';
 import AddBoardBtn from './component/AddBoardBtn';
 import Container from './component/Container';
 import './static/TestFuncBoardRouterd.less';
-import { Table } from 'antd';
+import {message, Table} from 'antd';
 /**
  * @author FruitJ
  */
@@ -22,7 +22,11 @@ class TestFuncBoardRouter extends Component {
     dispatch = this.props.dispatch;
     this.tableRef = React.createRef();
   }
-
+  
+  componentDidMount() {
+  
+  }
+  
   // 点击添加按钮的回调函数
   handleAddComponentClick = () => {
     // 动态添加组件
@@ -219,6 +223,26 @@ class TestFuncBoardRouter extends Component {
     });
   };
 
+  handleTableUploadPics = (info) => {
+  
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+      console.log("|||||");
+      dispatch({
+        type: "funcBoard/tableUploadPic",
+        payload: {
+          file: info.file,
+        }
+      });
+    }
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  
+  };
+  
   handleAddChildNamesToRealArea = key => {
     // 判断当前数组中的元素是否有临时生成的元素
     dispatch({
@@ -245,18 +269,48 @@ class TestFuncBoardRouter extends Component {
           temp_addEle,
           prop: arr[0].prop,
           parent_id: arr[0].parent_id,
+          table: this.tableRef.current.nextElementSibling.querySelectorAll("table")[0],
+          handleTableUploadPics: this.handleTableUploadPics,
         },
       });
     }
     // 将待选区域的标签移至真实区域 ( 同时清空待选区域数组 )
-
+    console.log("____________");
+    console.log(this.tableRef.current.nextElementSibling.querySelectorAll("table")[0]);
     dispatch({
       type: 'funcBoard/_realAddChildEle',
       payload: {
         key,
         table: this.tableRef.current.nextElementSibling.querySelectorAll("table")[0],
+        dispatch,
+        handleTableUploadPics: this.handleTableUploadPics,
       },
     });
+  
+    setTimeout(() => {
+      let tab_upload_btns = this.tableRef.current.nextElementSibling.querySelectorAll("table")[0].querySelectorAll(".tab-upload-btn");
+      console.log("get all table's upload's btn.");
+      console.log(tab_upload_btns);
+      for(let i = 0; i < tab_upload_btns.length; i++) {
+        tab_upload_btns[i].addEventListener('click', function (ev) {
+          console.log("___________________----------__________+++++++");
+          console.log(ev.target);
+          
+          let btn = ev.target;
+          console.log(Number(btn.dataset.rowKey));
+          dispatch({
+            type: "funcBoard/_getCurrentUploadKey",
+            payload: {
+              key: Number(btn.dataset.rowKey),
+            }
+          });
+        }, false);
+        
+        
+      }
+      
+      
+    }, 0)
   };
 
   handleRemoveReal_childNames = (item, key) => {

@@ -11,6 +11,7 @@ import {
   loadChildNodeDataService,
   getNewChildNamesEleService,
 } from '../../../services/board';
+import {uploadPicService} from "@/services/upload";
 
 // 常量配置区
 const config_common_properties = {
@@ -24,6 +25,7 @@ const config_common_properties = {
 let replace_str = '';
 let flag = 1000;
 let DEFAULT_TABLE_UNIT = ["价格", "库存", "图片"];
+let imgUrl = "https://images.ikuanguang.com/";
 // 组件的 modal
 export default {
   namespace: 'funcBoard',
@@ -40,6 +42,10 @@ export default {
 
     data: [], // 表格数据
     columns: [], // 表格列数据 ( 包含 rowSpan 等信息 - 动态生成 )
+    
+    currentUploadComponentIndex: 0,
+    currentUploadComponentUrl: "",
+    currentUploadPics: [],
   },
   effects: {
     // 加载父节点数据
@@ -121,13 +127,17 @@ export default {
         item.prop = item.parent_id;
         item.id = item.child_id;
       });
-
+      
+      alert("啦啦啦啦");
+      console.log("...//..");
+      console.log(param.table);
       // 替换集合元素
       yield put({
         type: '_replaceChildEleId',
         payload: {
           temp_addEle: res,
           key: param.key,
+          
         },
       });
 
@@ -136,9 +146,28 @@ export default {
         type: '_realAddChildEle',
         payload: {
           key: param.key,
+          table: param.table,
+          handleTableUploadPics: param.handleTableUploadPics,
         },
       });
     },
+    
+    *tableUploadPic({ payload: param }, { call, put }) {
+      let token = "2qKDRQz2JQb45aZjHAmER79xZ3stLOOvSHEq8n34:moq5NAQqBP7pYv5qleq2uZe7a1s=:eyJzY29wZSI6Imh1aXl1bi1hcHAtaW1hZ2VzIiwiZGVhZGxpbmUiOjE1Nzg4OTk2ODh9";
+      let formData = new window.FormData();
+      formData.append('file', param.file.originFileObj);
+      formData.append('token', token);
+      let res = yield call(uploadPicService, formData);
+      console.log(`imgUrl: ${ imgUrl }${ res.hash }`);
+      
+      // 保存当前表格上传图片的 url
+      yield put({
+        type: "_saveCurrentTabUploadUrl",
+        payload: `${ imgUrl }${ res.hash }`,
+      });
+      
+    },
+    
   },
   reducers: {
     // 添加组件
@@ -503,22 +532,25 @@ export default {
     _realAddChildEle(state, { payload: param }) {
       
       let tbody = param.table.querySelectorAll("tbody")[0];
-      
       setTimeout(() => { // 使用定时器的原因是表格生成的时机比获取行为慢，导致获取失败
         // ( 为每个最后含有 file 类型的 input 设置 data-key 属性 )
+    
         let trs = tbody.children;
         let tds = [];
+    
         for(let i = 0; i < trs.length; i++) {
+      
           let len = trs[i].querySelectorAll("td").length;
           tds.push(trs[i].querySelectorAll("td")[len - 1]);
         }
+    
         // 为当前每个 td 下面的 btn 设置 data-key 属性
         tds.forEach((item, index) => {
           item.querySelectorAll("button")[0].dataset.rowKey = index.toString();
         });
       }, 0);
   
-  
+      console.log("[][][][][");
       let arr = [];
       if (state.containers[param.key].real_childNames.length === 0) {
         state.containers[param.key].real_childNames.push(
@@ -628,6 +660,9 @@ export default {
         console.log(state.backUp_parentNames);
 
         if (!state.board_data.some((item, index) => item.name === '价格')) {
+          
+          console.log("获取当前最后一个元素的 id ");
+          console.log(item);
           flag += 1;
 
           let arr = [];
@@ -653,6 +688,9 @@ export default {
           state.board_data.push(...arr);
         }
   
+        console.log("||| 分割线 |||");
+        console.log(state.backUp_childNames);
+        
         if (!state.board_data.some((item, index) => item.name === '库存')){
           flag += 1;
   
@@ -700,8 +738,8 @@ export default {
           arr[0].children = [
             {
               prop: flag.toString(),
-              name: (<Upload>
-                    <Button>
+              name: (<Upload onChange={ param.handleTableUploadPics}>
+                    <Button className="tab-upload-btn">
                       <Icon type="upload"/> Click to Upload
                     </Button>
                   </Upload>
@@ -714,18 +752,25 @@ export default {
           state.board_data.push(...arr);
         }
 
+        console.log("(( 分割线 ))");
+        console.log(state.board_data);
         let res = formatData(state.board_data);
         console.log(res);
 
         // 配置显示表格数据需要的数据源
         state.data = res[0];
         state.columns = res[1];
+        
       }
 
       return { ...state };
     },
     // 移除真实区域的子节点数据
     _removeReal_childNames(state, { payload: param }) {
+      
+      console.log("嘣嘣嘣");
+      console.log(state.board_data);
+      
       for (let i = 0; i < state.board_data.length; i++) {
         if (state.board_data[i].id === Number(param.item.parent_id)) {
           state.board_data[i].children = state.board_data[i].children.filter(
@@ -851,7 +896,12 @@ export default {
         input_data.forEach((item, index) => {
           let obj = {};
           item.forEach((val, num) => {
-            obj[alis[num]] = val;
+            if(alis[num] !== "sku_url") {
+              obj[alis[num]] = Number(val);
+            }else {
+              obj[alis[num]] = val;
+            }
+            
           });
   
           obj.spec_option_id_list = sku_list[index];
@@ -862,9 +912,55 @@ export default {
       }
   
       console.log("}_ + + _{");
+      // console.log(temp);
       console.log(data);
       console.log(input_data);
       console.log(sku_list);
+      console.log("}}} 分割线 {{{");
+      console.log(state.currentUploadPics);
+      
+      for(let i = 0; i < data.length; i++) {
+        let temp = state.currentUploadPics.filter((item, index) => item.index === i)[0];
+        data[i].sku_url = temp === undefined ? "" : temp.url;
+      }
+      console.log("最终数据");
+      console.log(data);
+      return { ...state };
+    },
+    '_getCurrentUploadKey'(state, { payload: param }) {
+      
+      console.log("_getCurrentUploadKey ...");
+      console.log(param.key);
+      state.currentUploadComponentIndex = param.key;
+      return { ...state };
+    },
+    '_saveCurrentTabUploadUrl'(state, { payload: imgUrl }) {
+      
+      state.currentUploadComponentUrl = imgUrl;
+      console.log("*_ 分割线 _*");
+      console.log(`currentUploadComponentIndex: ${state.currentUploadComponentIndex}`);
+      console.log(`currentUploadComponentUrl: ${ state.currentUploadComponentUrl }`);
+      if(state.currentUploadPics.length === 0) {
+        state.currentUploadPics.push({
+          index: state.currentUploadComponentIndex,
+          url: state.currentUploadComponentUrl,
+        });
+      }else {
+        for(let i = 0; i < state.currentUploadPics.length; i++) {
+          if(state.currentUploadPics[i].index === state.currentUploadComponentIndex) {
+            state.currentUploadPics[i].url = state.currentUploadComponentUrl;
+          }else {
+            state.currentUploadPics.push({
+              index: state.currentUploadComponentIndex,
+              url: state.currentUploadComponentUrl,
+            });
+          }
+        }
+      }
+      
+      
+      console.log("图片");
+      console.log(state.currentUploadPics);
       return { ...state };
     },
   },
@@ -1536,3 +1632,16 @@ function formatData(data) {
 
   return [tableData, columns]; // 返回表格数据与表格列数据
 }
+
+/*function handleGetCurrentKey(ev, dispatch) {
+  console.log("_)_ 分割线 _(_");
+  console.log(ev);
+  dispatch({
+    type: "funcBoard/_getCurrentKey",
+    ev,
+  });
+}*/
+
+/*function handleTableUploadPics() {
+  alert("嘻嘻");
+}*/

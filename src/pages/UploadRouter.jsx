@@ -61,7 +61,6 @@ class UploadRouter extends Component {
         return (
 	        <Upload
 	                onChange={ this.handleChangeUpload }
-	        
 	        >
 		        <Button>
 			        <Icon type="upload" /> Click to Upload
